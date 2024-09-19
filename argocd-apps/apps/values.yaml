@@ -18,7 +18,7 @@ global:
 
 applications:
   fluent-bit:
-    name: app-of-apps
+    name: fluent-bit
     path: argocd-apps/fluent-bit
     helm:
       releaseName: fluent-bit
