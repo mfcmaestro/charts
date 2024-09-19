@@ -1,6 +1,6 @@
 ---
 global:
-  namespace: fluent-bit
+  namespace: core
   project: default
   server: https://kubernetes.default.svc
   repo:
