@@ -22,7 +22,7 @@ applications:
     path: argocd-apps/fluent-bit
     helm:
       releaseName: fluent-bit
-      version: v1
+      version: v3
       valueFiles:
         - values-grafana-cloud.yaml
 
