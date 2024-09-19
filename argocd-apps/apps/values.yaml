@@ -1,6 +1,6 @@
 ---
 global:
-  namespace: argocd
+  namespace: core
   project: default
   server: https://kubernetes.default.svc
   repo:
