@@ -4,11 +4,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  {{- if (($v).ignore_name_rendering) }}
   name: {{ default $k (($v).name) }}
-  {{- else }}
-  name: {{ default $.Values.global.cluster (($v).cluster) }}---{{ default $.Values.global.project (($v).project) }}---{{ default $k (($v).name) }}
-  {{- end }}
   {{- if (($v).annotations) }}
   annotations:
   {{- with $v.annotations }}
