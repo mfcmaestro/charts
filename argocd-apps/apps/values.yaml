@@ -17,12 +17,11 @@ global:
       - RespectIgnoreDifferences=true
 
 applications:
-  applications:
-    cert-manager:
-      path: argocd-apps/fluent-bit
-      helm:
-        releaseName: fluent-bit
-        version: v1
-        valueFiles:
-          - values-grafana-cloud.yaml
+  fluent-bit:
+    path: argocd-apps/fluent-bit
+    helm:
+      releaseName: fluent-bit
+      version: v1
+      valueFiles:
+        - values-grafana-cloud.yaml
 
