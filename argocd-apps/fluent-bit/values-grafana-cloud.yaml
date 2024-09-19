@@ -1,4 +1,5 @@
 fluent-bit:
+  
   resources:
     limits:
       cpu: 500m
@@ -7,3 +8,5 @@ fluent-bit:
       cpu: 300m
       memory: 256Mi
 
+  nodeSelector:
+    non-existing: "true"
