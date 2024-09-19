@@ -1,0 +1,83 @@
+{{- range $k, $v := .Values.applications }}
+{{- with $ }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  {{- if (($v).ignore_name_rendering) }}
+  name: {{ default $k (($v).name) }}
+  {{- else }}
+  name: {{ default $.Values.global.cluster (($v).cluster) }}---{{ default $.Values.global.project (($v).project) }}---{{ default $k (($v).name) }}
+  {{- end }}
+  {{- if (($v).annotations) }}
+  annotations:
+  {{- with $v.annotations }}
+    {{- toYaml $v.annotations | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  labels:
+    {{- include "commonlib.labels" $ | nindent 4 }}
+    {{- if (($v).labels) }}
+    {{- toYaml $v.labels | nindent 4 }}
+    {{- end }}
+  {{- if (($v).finalizers) }}
+  finalizers:
+    {{- toYaml $v.finalizers | nindent 4 }}
+  {{- else }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  {{- end }}
+spec:
+  destination:
+    namespace: {{ default $.Values.global.namespace (($v).namespace) }}
+    server: {{ default $.Values.global.server (($v).server) }}
+  project: {{ default $.Values.global.project (($v).project) }}
+  {{- if (($v).ignoreDifferences) }}
+  ignoreDifferences:
+    {{- toYaml $v.ignoreDifferences | nindent 4 }}
+  {{- end }}
+  source:
+    repoURL: {{ default $.Values.global.repo.url ((($v).repo).url) }}
+    targetRevision: {{ default (($.Values.global.repo).revision) ((($v).repo).revision) }}
+    path: {{ $v.path }}
+    {{- if (($v).directory) }}
+    directory:
+      {{- toYaml $v.directory | nindent 6 }}
+    {{- else if (($v).helm) }}
+    helm:
+      {{- toYaml $v.helm | nindent 6 }}
+    {{- else if (($v).plugin) }}
+    plugin:
+      {{- toYaml $v.plugin | nindent 6 }}
+    {{- else if $.Values.global.directory }}
+    directory:
+      {{- toYaml $.Values.global.directory | nindent 6 }}
+    {{- else if $.Values.global.helm }}
+    helm:
+      {{- toYaml $.Values.global.helm | nindent 6 }}
+    {{- else if $.Values.global.plugin }}
+    plugin:
+      {{- toYaml $.Values.global.plugin | nindent 6 }}
+    {{- else }}
+    helm:
+      version: v3
+      valueFiles:
+        - values.yaml
+    {{- end }}
+  syncPolicy:
+    {{- if ((($v).syncPolicy).automated) }}
+    automated:
+      {{- toYaml $v.syncPolicy.automated | nindent 6 }}
+    {{- else if (($.Values.global.syncPolicy).automated) }}
+    automated:
+      {{- toYaml $.Values.global.syncPolicy.automated | nindent 6 }}
+    {{- end }}
+    {{- if ((($v).syncPolicy).syncOptions) }}
+    syncOptions:
+      {{- toYaml $v.syncPolicy.syncOptions | nindent 6 }}
+    {{- else if (($.Values.global.syncPolicy).syncOptions) }}
+    syncOptions:
+      {{- toYaml $.Values.global.syncPolicy.syncOptions | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- end }}

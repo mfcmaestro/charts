@@ -1,0 +1,28 @@
+---
+global:
+  namespace: fluent-bit
+  project: default
+  server: https://kubernetes.default.svc
+  repo:
+    url: git@github.com:mfcmaestro/charts.git
+    revision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true
+
+applications:
+  applications:
+    cert-manager:
+      path: argocd-apps/fluent-bit
+      helm:
+        releaseName: fluent-bit
+        version: v1
+        valueFiles:
+          - values-grafana-cloud.yaml
+
