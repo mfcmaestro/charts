@@ -25,4 +25,6 @@ applications:
       version: v3
       valueFiles:
         - values-grafana-cloud.yaml
-
+      # parameters:
+      #   - name: fluent-bit.nodeSelector.non-existing
+      #     value: 'yes'
