@@ -1,0 +1,10 @@
+argo-cd:
+  configs:
+    cm:
+      accounts.vova: apiKey,login
+    rbac:
+      policy.csv: |
+        p, role:fluent-bit-updater, applications, get, */*, allow
+        p, role:fluent-bit-updater, applications, update, */*bit, allow
+
+        g, vova, role:fluent-bit-updater
