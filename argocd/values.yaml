@@ -2,6 +2,10 @@ argo-cd:
   configs:
     cm:
       accounts.vova: apiKey,login
+      # Ignores .data changes of all secrets with a vaultInjectionChecksum annotation
+      resource.customizations.ignoreDifferences.Secret: |
+        jqPathExpressions:
+          - '. | select(.metadata.annotations.vaultInjectionChecksum) | .data'
     rbac:
       policy.csv: |
         p, role:fluent-bit-updater, applications, get, */*, allow
