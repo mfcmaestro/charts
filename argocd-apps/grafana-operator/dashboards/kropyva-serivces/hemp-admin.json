@@ -1,0 +1,402 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 173,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafana-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 11,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.0-80050",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafana-logs"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | status =~ `(400|40[2-9]|4[1-9][0-9]|5[0-9]{2})` | http_host= `hemp-admin.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [$__range]))",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Errors total (4xx|5xx)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafana-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 13,
+        "x": 11,
+        "y": 0
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.0-80050",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafana-logs"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | http_host= `hemp-admin.nettlecloud.com` | status !~ `401` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [$__range])) ",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Requests total",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafana-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 0,
+        "y": 4
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.0-80050",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafana-logs"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | status =~ `400|40[2-9]|4[1-9][0-9]` | http_host= `hemp-admin.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [$__range]))\n/ \nsum(count_over_time({kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | http_host= `hemp-admin.nettlecloud.com` | status !~ `401` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [$__range])) \n* \n100",
+          "hide": false,
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "% of errors [ 4xx ]",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafana-logs"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 5,
+        "y": 4
+      },
+      "id": 11,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "11.5.0-80050",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafana-logs"
+          },
+          "editorMode": "code",
+          "expr": "{kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | status =~ `400|40[2-9]|4[1-9][0-9]` | http_host= `hemp-admin.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` | line_format \"status: {{.status}} uri:{{.request_uri}}\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Recent requests 4xx",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafana-logs"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 0,
+        "y": 12
+      },
+      "id": 37,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.0-80050",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafana-logs"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | status =~ `(5[0-9]{2})` | http_host= `hemp-admin.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [$__range]))\n/ \nsum(count_over_time({kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | http_host= `hemp-admin.nettlecloud.com` | status !~ `401` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [$__range]))\n* \n100",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "% of errors [ 5хх ]",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "grafana-logs"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 5,
+        "y": 12
+      },
+      "id": 36,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "11.5.0-80050",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "grafana-logs"
+          },
+          "editorMode": "code",
+          "expr": "{kubernetes_pod_name=~\"prod-ingress-nginx-controller.*\"} | json | status =~ `(5[0-9]{2})` | http_host= `hemp-admin.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` | line_format \"{{.request_uri}} status: {{.status}}\"",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Recent requests 5xx",
+      "type": "logs"
+    }
+  ],
+  "preload": true,
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "hemp-admin",
+  "uid": "kropyva-admin",
+  "version": 2,
+  "weekStart": "monday"
+}

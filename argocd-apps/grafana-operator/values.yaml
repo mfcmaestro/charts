@@ -1,0 +1,228 @@
+global:
+
+# This label is used as instance selector to tell the operator which Grafana instance the resource applies to.
+# https://grafana.github.io/grafana-operator/docs/overview/#instanceselector
+  instanceNameLabel: grafana-selfhosted
+
+grafana-operator:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: tier
+            operator: In
+            values:
+            - monitoring
+
+  tolerations:
+    - key: tier
+      operator: Equal
+      value: monitoring
+      effect: NoSchedule
+    - key: tier
+      operator: Equal
+      value: monitoring
+      effect: NoExecute
+
+grafana:
+  persistentVolumeClaim:
+    enabled: true
+    size: "2Gi"
+
+  podAnnotations:
+    vault.security.banzaicloud.io/vault-addr: https://vault.vault-ops:8200
+    vault.security.banzaicloud.io/vault-role: grafana
+    vault.security.banzaicloud.io/vault-tls-secret: vault-tls # pragma: allowlist secret
+
+  config:
+    server:
+      domain: "true"
+      root_url: https://grafana.nettlecloud.com
+    security:
+      cookie_secure: "true"
+      cookie_samesite: lax
+    auth:
+      disable_login_form: "true"
+    auth.generic_oauth:
+      enabled: "true"
+      name: Cognito
+      allow_sign_up: "true"
+      scopes: email profile openid
+      auth_url: ${OIDC_DOMAIN}/oauth2/authorize
+      token_url: ${OIDC_DOMAIN}/oauth2/token
+      api_url: ${OIDC_DOMAIN}/oauth2/userinfo
+      signout_redirect_url: ${OIDC_DOMAIN}/logout?client_id=${GF_AUTH_GENERIC_OAUTH_CLIENT_ID}&logout_uri=https%3A%2F%2Fgrafana.nettlecloud.com%2Flogin%2Fgeneric_oauth
+      role_attribute_path: ("cognito:groups" | contains([*], 'grafana-admin') && 'Admin' || contains([*], 'grafana-editor') && 'Editor' || contains([*], 'grafana-viewer') && 'Viewer' )
+      role_attribute_strict: "true"
+      login_attribute_path: email
+
+  env:
+    - name: OIDC_DOMAIN
+      value: vault:secret/data/nettle/aws/grafana/oidc#OIDC_DOMAIN
+    - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+      value: vault:secret/data/nettle/aws/grafana/oidc#OIDC_CLIENT_SECRET # pragma: allowlist secret
+    - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+      value: vault:secret/data/nettle/aws/grafana/oidc#OIDC_CLIENT_ID
+
+  image: grafana/grafana:11.3.0
+
+  resources: {}
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: tier
+            operator: In
+            values:
+            - monitoring
+
+  tolerations:
+    - key: tier
+      operator: Equal
+      value: monitoring
+      effect: NoSchedule
+    - key: tier
+      operator: Equal
+      value: monitoring
+      effect: NoExecute
+
+  ingress:
+    enabled: true
+    ingressClassName: ops-nginx
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    hosts:
+      - grafana.nettlecloud.com
+    path: /
+    pathType: Prefix
+    tls:
+      - hosts:
+          - grafana.nettlecloud.com
+
+datasources:
+  - name: grafana-logs
+    datasource:
+      type: loki
+      access: proxy
+      url: http://loki-read.monitoring.svc.cluster.local:3100
+      isDefault: true
+      jsonData:
+        timeout: 300
+        maxLines: 1000
+        manageAlerts: false
+
+  - name: grafanacloud-kropyva-prom
+    valuesFrom:
+      - targetPath: secureJsonData.basicAuthPassword
+        valueFrom:
+          secretKeyRef:
+            name: grafana-operator-common-secret
+            key: "GC_METRICS_TOKEN"
+      - targetPath: basicAuthUser
+        valueFrom:
+          secretKeyRef:
+            name: grafana-operator-common-secret
+            key: GC_METRICS_USERNAME
+    datasource:
+      type: prometheus
+      access: proxy
+      url: https://prometheus-prod-01-eu-west-0.grafana.net/api/prom
+      basicAuth: true
+      basicAuthUser: ${GC_METRICS_USERNAME}
+      jsonData:
+        manageAlerts: false
+      secureJsonData:
+        basicAuthPassword: ${GC_METRICS_TOKEN}
+
+vault:
+  annotations:
+    vault.security.banzaicloud.io/vault-addr: https://vault.vault-ops:8200
+    vault.security.banzaicloud.io/vault-role: webhook-secrets-mutation # pragma: allowlist secret
+    vault.security.banzaicloud.io/vault-tls-secret: vault-tls # pragma: allowlist secret
+  data:
+    GC_METRICS_USERNAME: vault:secret/data/nettle/grafanacloud/grafana-selfhosted#GC_METRICS_USERNAME
+    GC_METRICS_TOKEN: vault:secret/data/nettle/grafanacloud/grafana-selfhosted#GC_METRICS_TOKEN
+
+folders:
+  authzgateway:
+    title: "authzgateway"
+  grafana-usage:
+    title: "grafana-usage"
+  k8s-apps:
+    title: "kubernetes-apps"
+  k8s-resources:
+    title: "kubernetes-resources"
+  kropyva-serivces:
+    title: "kropyva-serivces"
+  logs:
+    title: "logs"
+  meteo-server:
+    title: "meteo-server"
+  openvpn-server:
+    title: "openvpn-server"
+  resources-server:
+    title: "resources-server"
+  services-alert-critical:
+    title: "services-alert-critical"
+  vault:
+    title: "vault"
+
+dashboards:
+# K8s resources
+  - name: k8s-system-api-server
+    url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
+    folder: k8s-resources
+  - name: k8s-system-coredns
+    url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-coredns.json
+    folder: k8s-resources
+  - name: k8s-views-global
+    url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-global.json
+    folder: k8s-resources
+  - name: k8s-views-namespaces
+    url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-namespaces.json
+    folder: k8s-resources
+  - name: k8s-views-nodes
+    url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
+    folder: k8s-resources
+  - name: k8s-views-pods
+    url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+    folder: k8s-resources
+  - name: node-exporter-full
+    grafanaComId: 1860
+    folder: k8s-resources
+  - name: k8s-nginx-ingress-prometheus-requests
+    json: dashboards/k8s-resources/kubernetes-nginx-ingress-prometheus-requests.json
+    folder: k8s-resources
+# Grafana usage
+  - name: kubernetes-logs-usage
+    json: dashboards/grafana-usage/logs-kubernetes.json
+    folder: grafana-usage
+  - name: servers-logs-usage
+    json: dashboards/grafana-usage/logs-servers.json
+    folder: grafana-usage
+# Kropyva services
+  - name: authzgateway
+    json: dashboards/kropyva-serivces/authzgateway.json
+    folder: kropyva-serivces
+  - name: hemp-admin
+    json: dashboards/kropyva-serivces/hemp-admin.json
+    folder: kropyva-serivces
+  - name: hemp-cabinet
+    json: dashboards/kropyva-serivces/hemp-cabinet.json
+    folder: kropyva-serivces
+  - name: hemp-filemanagement
+    json: dashboards/kropyva-serivces/hemp-filemanagement.json
+    folder: kropyva-serivces
+  - name: restricted
+    json: dashboards/kropyva-serivces/restricted.json
+    folder: kropyva-serivces
+  - name: teneta-cloud
+    json: dashboards/kropyva-serivces/teneta-cloud.json
+    folder: kropyva-serivces
+  - name: tutorials
+    json: dashboards/kropyva-serivces/tutorials.json
+    folder: kropyva-serivces

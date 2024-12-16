@@ -1,0 +1,87 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  labels:
+    instance: {{ .Values.global.instanceNameLabel }}
+spec:
+  {{- if .Values.grafana.persistentVolumeClaim.enabled }}
+  persistentVolumeClaim:
+    spec:
+      accessModes:
+        - {{ .Values.grafana.persistentVolumeClaim.accessMode | default "ReadWriteOnce" }}
+      resources:
+        requests:
+          storage: {{ .Values.grafana.persistentVolumeClaim.size }}
+  {{- end }}
+  config:
+      {{- toYaml .Values.grafana.config | nindent 4 }}
+  deployment:
+    spec:
+      template:
+        metadata:
+          annotations:
+            {{- toYaml .Values.grafana.podAnnotations | nindent 12 }}
+        spec:
+          securityContext:
+            fsGroup: 1001
+          containers:
+            - name: grafana
+              image: {{ .Values.grafana.image }}
+              {{- if .Values.grafana.resources }}
+              resources: {{- toYaml .Values.grafana.resources | nindent 16 }}
+              {{- end }}
+              env:
+                {{- range .Values.grafana.env }}
+                - name: {{ .name | quote }}
+                  {{- if .value }}
+                  value: {{ .value | quote }}
+                  {{- else if .valueFrom }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .valueFrom.secretKeyRef.name | quote }}
+                      key: {{ .valueFrom.secretKeyRef.key | quote }}
+                  {{- end }}
+                {{- end }}
+          {{- if .Values.grafana.affinity }}
+          affinity:
+            {{- toYaml .Values.grafana.affinity | nindent 12 }}
+          {{- end }}
+          {{- if .Values.grafana.tolerations }}
+          tolerations:
+            {{- toYaml .Values.grafana.tolerations | nindent 12 }}
+          {{- end }}
+          volumes:
+            {{- if .Values.grafana.persistentVolumeClaim.enabled }}
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: {{ .Values.grafana.persistentVolumeClaim.name | default "grafana-pvc" }}
+            {{- end }}
+  {{- if .Values.grafana.ingress.enabled }}
+  ingress:
+    metadata:
+      annotations:
+        {{- toYaml .Values.grafana.ingress.annotations | nindent 8 }}
+    spec:
+      ingressClassName: {{ .Values.grafana.ingress.ingressClassName | default "ops-nginx" }}
+      rules:
+        {{- range .Values.grafana.ingress.hosts }}
+        - host: {{ . }}
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: grafana-service
+                    port:
+                      number: 3000
+                path: {{ $.Values.grafana.ingress.path }}
+                pathType: {{ $.Values.grafana.ingress.pathType }}
+        {{- end }}
+      {{- range .Values.grafana.ingress.tls }}
+      tls:
+        - hosts:
+            {{- range .hosts }}
+            - {{ . }}
+            {{- end }}
+      {{- end }}
+  {{- end }}

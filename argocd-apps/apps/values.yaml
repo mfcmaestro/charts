@@ -17,14 +17,25 @@ global:
       - RespectIgnoreDifferences=true
 
 applications:
+  # fluent-bit:
+  #   name: fluent-bit
+  #   path: argocd-apps/fluent-bit
+  #   helm:
+  #     releaseName: fluent-bit
+  #     version: v3
+  #     valueFiles:
+  #       - values-grafana-cloud.yaml
+  #     # parameters:
+  #     #   - name: fluent-bit.nodeSelector.non-existing
+  #     #     value: 'yes'
   fluent-bit:
-    name: fluent-bit
-    path: argocd-apps/fluent-bit
+    name: grafana-operator
+    path: argocd-apps/grafana-operator
     helm:
-      releaseName: fluent-bit
+      releaseName: grafana-operator
       version: v3
       valueFiles:
-        - values-grafana-cloud.yaml
+        - values.yaml
       # parameters:
       #   - name: fluent-bit.nodeSelector.non-existing
       #     value: 'yes'

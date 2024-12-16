@@ -1,0 +1,69 @@
+########################################## EVERY 1h ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'resources-server-every-1h'
+spec:
+  name: 'every 1h'
+  folderRef: resources-server
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 1h
+  rules:
+    - uid: ae6mikoil4bggc
+      title: Storagebox disk space usage.
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 172800
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: last_over_time({host="resource-bay"} | json | SYSLOG_IDENTIFIER = `CRON` |= `[INFO] Disk space available:` | regexp `\[(?P<disk_space>\d+)%\]` | unwrap disk_space [$__auto]) by (disk_space, environment)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: C
+          relativeTimeRange:
+            from: 172800
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 95
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params:
+                      - C
+                reducer:
+                  params: []
+                  type: last
+                type: query
+            datasource:
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: Alerting
+      execErrState: Error
+      for: 0s
+      annotations:
+        description: Storagebox last checked disk space usage is {{`{{ $labels.disk_space }}`}}%
+        summary: Storagebox disk space usage > 95%
+      isPaused: false
