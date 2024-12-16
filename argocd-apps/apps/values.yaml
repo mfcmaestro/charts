@@ -1,6 +1,6 @@
 ---
 global:
-  namespace: core
+  namespace: grafana-operator
   project: default
   server: https://kubernetes.default.svc
   repo:
@@ -28,7 +28,7 @@ applications:
   #     # parameters:
   #     #   - name: fluent-bit.nodeSelector.non-existing
   #     #     value: 'yes'
-  fluent-bit:
+  grafana-operator:
     name: grafana-operator
     path: argocd-apps/grafana-operator
     helm:
