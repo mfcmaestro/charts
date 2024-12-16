@@ -36,6 +36,10 @@ applications:
       version: v3
       valueFiles:
         - values.yaml
-      # parameters:
-      #   - name: fluent-bit.nodeSelector.non-existing
-      #     value: 'yes'
+      ignoreDifferences:
+        - group: "*"
+          kind: GrafanaAlertRuleGroup
+          jsonPointers:
+            - /spec/interval
+            - /spec/rules/*/isPaused
+            - /spec/rules/*/data/*/relativeTimeRange/to
