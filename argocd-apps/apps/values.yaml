@@ -41,5 +41,5 @@ applications:
         kind: GrafanaAlertRuleGroup
         jsonPointers:
           - /spec/interval
-          - /spec/rules/*/isPaused
-          - /spec/rules/*/data/*/relativeTimeRange/to
+          - /spec/*/isPaused
+          - /spec/rules/relativeTimeRange
