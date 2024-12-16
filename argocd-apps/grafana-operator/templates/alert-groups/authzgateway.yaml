@@ -1,0 +1,314 @@
+########################################## EVERY 5m ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'authzgateway-every-5m'
+spec:
+  name: 'every 5m'
+  folderRef: authzgateway
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 5m
+  rules:
+    - uid: fe60gh5yew6psd
+      title: HTTP Status Codes 503|500
+      for: 0s
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum (count_over_time({kubernetes_pod_name=~"(prod|stage)-ingress-nginx-controller.*"} | json |  http_host =~`(authzgateway|authzgateway-stage).nettlecloud.com` | json | status=~ "503|500" [5m])) by (cluster)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A) >= 1
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+      noDataState: OK
+      execErrState: OK
+      isPaused: false
+---
+########################################## EVERY 1h ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'authzgateway-every-1h'
+spec:
+  name: 'every 1h'
+  folderRef: authzgateway
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 1h
+  rules:
+    - uid: be60gh65wl81se
+      title: HTTP Status Codes 5xx
+      for: 0s
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 3600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum (count_over_time({kubernetes_pod_name=~"(prod|stage)-ingress-nginx-controller.*"} | json | http_host =~`(authzgateway|authzgateway-stage).nettlecloud.com` | json | status=~"5.+" | status != "503" | status != "500" [1h]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A) >= 1
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: Over the last 1 hour, the number of errors is - {{`{{ $values.A.Value }}`}}.
+      isPaused: false
+    - uid: de60gh661l0qob
+      title: HTTP Status Codes 4xx
+      for: 0s
+      condition: A
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 3600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum (count_over_time({kubernetes_pod_name=~"(prod|stage)-ingress-nginx-controller.*"} | json | http_host =~`(authzgateway|authzgateway-stage).nettlecloud.com` | json | status=~"4.+" | status !~"401|403|404|499" [1h]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A) >= 1
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: Over the last 1 hour, the number of errors is - {{`{{ $values.A.Value }}`}}.
+      isPaused: false
+---
+########################################## EVERY 24h ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'authzgateway-every-24h'
+spec:
+  name: 'every 24h'
+  folderRef: authzgateway
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 24h
+  rules:
+    - uid: ce60gh5z3v668b
+      title: HTTP Status Codes 401|403|404
+      for: 0s
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 86400
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum (count_over_time({kubernetes_pod_name=~"(prod|stage)-ingress-nginx-controller.*"} | json |  http_host =~`(authzgateway|authzgateway-stage).nettlecloud.com` | json | status=~"401|403|404" [24h])) by (cluster)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                      - 0
+                      - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A) >= 1
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: Over the last 24 hours, the number of errors is - {{`{{ $values.A.Value }}`}}.
+      isPaused: false
+    - uid: ee60gh5zbcv7kc
+      title: HTTP Status Codes 499
+      for: 0s
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 86400
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum (count_over_time({kubernetes_pod_name=~"(prod|stage)-ingress-nginx-controller.*"} | json |  http_host =~`(authzgateway|authzgateway-stage).nettlecloud.com` | json | status="499" [24h])) by (cluster)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A) >= 1
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: Over the last 24 hours, the number of errors is - {{`{{ $values.A.Value }}`}}.
+      isPaused: false

@@ -1,0 +1,379 @@
+########################################## EVERY 1m ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'kubernetes-resources-every-1m'
+spec:
+  name: 'every 1m'
+  folderRef: k8s-resources
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 1m
+  rules:
+    - uid: ddjpp1y55efpca
+      title: KubeCPUOvercommit
+      condition: A
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                sum(namespace_cpu:kube_pod_container_resource_requests:sum{job!="",}) by (cluster) - (sum(kube_node_status_allocatable{job!="",resource="cpu"}) by (cluster) - max(kube_node_status_allocatable{job!="",resource="cpu"}) by (cluster)) > 0
+                and
+                (sum(kube_node_status_allocatable{job!="",resource="cpu"}) by (cluster) - max(kube_node_status_allocatable{job!="",resource="cpu"}) by (cluster)) > 0
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+      noDataState: OK
+      execErrState: OK
+      for: 10m
+      annotations:
+        description: Cluster {{`{{ $labels.cluster }}`}} has overcommitted CPU resource requests for Pods by {{`{{ $value }}`}} CPU shares and cannot tolerate node failure.
+        runbook_url: ""
+        summary: Cluster has overcommitted CPU resource requests.
+      labels:
+        "": ""
+      isPaused: false
+    - uid: edjpp1y5ae8e8e
+      title: KubeMemoryOvercommit
+      condition: A
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                sum(namespace_memory:kube_pod_container_resource_requests:sum{}) by (cluster) - (sum(kube_node_status_allocatable{resource="memory", job!=""}) by (cluster) - max(kube_node_status_allocatable{resource="memory", job!=""}) by (cluster)) > 0
+                and
+                (sum(kube_node_status_allocatable{resource="memory", job!=""}) by (cluster) - max(kube_node_status_allocatable{resource="memory", job!=""}) by (cluster)) > 0
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+      noDataState: OK
+      execErrState: OK
+      for: 10m
+      annotations:
+        description: Cluster {{`{{ $labels.cluster }}`}} has overcommitted memory resource requests for Pods by {{`{{ $value | humanize }}`}} bytes and cannot tolerate node failure.
+        runbook_url: ""
+        summary: Cluster has overcommitted memory resource requests.
+      labels:
+        "": ""
+      isPaused: false
+    - uid: bdjpp1y5hvxfke
+      title: KubeCPUQuotaOvercommit
+      condition: B
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                sum(min without(resource) (kube_resourcequota{job!="", type="hard", resource=~"(cpu|requests.cpu)"})) by (cluster)
+                  /
+                sum(kube_node_status_allocatable{resource="cpu", job!=""}) by (cluster)
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 1.5
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            hide: false
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Cluster {{`{{ $labels.cluster }}`}}  has overcommitted CPU resource requests for Namespaces.
+        runbook_url: ""
+        summary: Cluster has overcommitted CPU resource requests.
+      labels:
+        "": ""
+      isPaused: false
+    - uid: fdjpp1y5pdmgwc
+      title: KubeMemoryQuotaOvercommit
+      condition: B
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                sum(min without(resource) (kube_resourcequota{job!="", type="hard", resource=~"(memory|requests.memory)"})) by (cluster)
+                  /
+                sum(kube_node_status_allocatable{resource="memory", job!=""}) by (cluster)
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 1.5
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            hide: false
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Cluster {{`{{ $labels.cluster }}`}}  has overcommitted CPU resource requests for Namespaces.
+        runbook_url: ""
+        summary: Cluster has overcommitted CPU resource requests.
+      labels:
+        "": ""
+      isPaused: false
+    - uid: bdjpp1y5udf5sa
+      title: KubeQuotaAlmostFull
+      condition: A
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                kube_resourcequota{job!="", type="used"}
+                  / ignoring(instance, job, type)
+                (kube_resourcequota{job!="", type="hard"} > 0)
+                  > 0.9 < 1
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+      noDataState: OK
+      execErrState: OK
+      for: 15m
+      annotations:
+        description: Namespace {{`{{ $labels.namespace }}`}} is using {{`{{ humanizePercentage (index $values "A").Value }}`}} of its {{`{{ $labels.resource }}`}} quota.
+        runbook_url: ""
+        summary: Namespace quota is going to be full.
+      labels:
+        "": ""
+      isPaused: false
+    - uid: edjpp1y5zd7uoe
+      title: KubeQuotaFullyUsed
+      condition: A
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                kube_resourcequota{job!="", type="used"}
+                  / ignoring(instance, job, type)
+                (kube_resourcequota{job!="", type="hard"} > 0)
+                  == 1
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+      noDataState: OK
+      execErrState: OK
+      for: 15m
+      annotations:
+        description: Namespace {{`{{ $labels.namespace }}`}} is using {{`{{ humanizePercentage (index $values "A").Value }}`}} of its {{`{{ $labels.resource }}`}} quota.
+        runbook_url: ""
+        summary: Namespace quota is fully used.
+      labels:
+        "": ""
+      isPaused: false
+    - uid: fdjpp1y64d0jke
+      title: KubeQuotaExceeded
+      condition: A
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                kube_resourcequota{job!="", type="used"}
+                  / ignoring(instance, job, type)
+                (kube_resourcequota{job!="", type="hard"} > 0)
+                  > 1
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+      noDataState: OK
+      execErrState: OK
+      for: 15m
+      annotations:
+        description: Namespace {{`{{ $labels.namespace }}`}} is using {{`{{ humanizePercentage (index $values "A").Value }}`}} of its {{`{{ $labels.resource }}`}} quota.
+        runbook_url: ""
+        summary: Namespace quota has exceeded the limits.
+      labels:
+        "": ""
+      isPaused: false
+    - uid: cdjpp1y6bupkwb
+      title: CPUThrottlingHigh
+      condition: B
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                sum(increase(container_cpu_cfs_throttled_periods_total{pod !~ "openvpn-synthetic-check.*", pod !~ ".*rabbitmq.*"}[5m])) by (cluster, container, pod, namespace)
+                  /
+                sum(increase(container_cpu_cfs_periods_total{}[5m])) by (cluster, container, pod, namespace)
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0.4
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            hide: false
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 15m
+      annotations:
+        description: '{{`{{ humanizePercentage (index $values "A").Value }}`}} throttling of CPU in cluster {{`{{ $labels.cluster }}`}} namespace {{`{{ $labels.namespace }}`}} for container {{`{{ $labels.container }}`}} in pod {{`{{ $labels.pod }}`}}.'
+        runbook_url: ""
+        summary: Processes experience elevated CPU throttling.
+      labels:
+        "": ""
+      isPaused: false

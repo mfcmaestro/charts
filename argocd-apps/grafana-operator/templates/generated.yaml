@@ -1,0 +1,160 @@
+# apiVersion: 1
+# groups:
+#     - orgId: 1
+#       name: every 5m
+#       folder: logs-stage
+#       interval: 5m
+#       rules:
+#         - uid: adbhv7cxt1hj4f
+#           title: missing-logs-openvpn-stage
+#           condition: B
+#           data:
+#             - refId: A
+#               queryType: instant
+#               relativeTimeRange:
+#                 from: 600
+#                 to: 0
+#               datasourceUid: grafanacloud-logs
+#               model:
+#                 datasource:
+#                     type: loki
+#                     uid: grafanacloud-logs
+#                 editorMode: code
+#                 expr: count_over_time({job="fluentbit", host="teneta-vpn-1-stage"}[5m])
+#                 intervalMs: 1000
+#                 maxDataPoints: 43200
+#                 queryType: instant
+#                 refId: A
+#             - refId: B
+#               datasourceUid: __expr__
+#               model:
+#                 conditions:
+#                     - evaluator:
+#                         params:
+#                             - 1
+#                             - 0
+#                         type: lt
+#                       operator:
+#                         type: and
+#                       query:
+#                         params: []
+#                       reducer:
+#                         params: []
+#                         type: avg
+#                       type: query
+#                 datasource:
+#                     name: Expression
+#                     type: __expr__
+#                     uid: __expr__
+#                 expression: A
+#                 hide: false
+#                 intervalMs: 1000
+#                 maxDataPoints: 43200
+#                 refId: B
+#                 type: threshold
+#           noDataState: Alerting
+#           execErrState: Error
+#           for: 5m
+#           isPaused: false
+#         - uid: edbhv7cypi60wc
+#           title: missing-logs-resources-stage
+#           condition: B
+#           data:
+#             - refId: A
+#               queryType: instant
+#               relativeTimeRange:
+#                 from: 600
+#                 to: 0
+#               datasourceUid: grafanacloud-logs
+#               model:
+#                 datasource:
+#                     type: loki
+#                     uid: grafanacloud-logs
+#                 editorMode: code
+#                 expr: count_over_time({job="fluentbit", host="resource-stage"}[5m])
+#                 intervalMs: 1000
+#                 maxDataPoints: 43200
+#                 queryType: instant
+#                 refId: A
+#             - refId: B
+#               datasourceUid: __expr__
+#               model:
+#                 conditions:
+#                     - evaluator:
+#                         params:
+#                             - 1
+#                             - 0
+#                         type: lt
+#                       operator:
+#                         type: and
+#                       query:
+#                         params: []
+#                       reducer:
+#                         params: []
+#                         type: avg
+#                       type: query
+#                 datasource:
+#                     name: Expression
+#                     type: __expr__
+#                     uid: __expr__
+#                 expression: A
+#                 hide: false
+#                 intervalMs: 1000
+#                 maxDataPoints: 43200
+#                 refId: B
+#                 type: threshold
+#           noDataState: Alerting
+#           execErrState: Error
+#           for: 5m
+#           isPaused: false
+#         - uid: fdbhv7cz1znr4d
+#           title: missing-logs-kubernetes-stage
+#           condition: B
+#           data:
+#             - refId: A
+#               queryType: instant
+#               relativeTimeRange:
+#                 from: 600
+#                 to: 0
+#               datasourceUid: grafanacloud-logs
+#               model:
+#                 datasource:
+#                     type: loki
+#                     uid: grafanacloud-logs
+#                 editorMode: code
+#                 expr: count_over_time({job="fluentbit", cluster="nettle-stage"}[5m])
+#                 intervalMs: 1000
+#                 maxDataPoints: 43200
+#                 queryType: instant
+#                 refId: A
+#             - refId: B
+#               datasourceUid: __expr__
+#               model:
+#                 conditions:
+#                     - evaluator:
+#                         params:
+#                             - 1
+#                             - 0
+#                         type: lt
+#                       operator:
+#                         type: and
+#                       query:
+#                         params: []
+#                       reducer:
+#                         params: []
+#                         type: avg
+#                       type: query
+#                 datasource:
+#                     name: Expression
+#                     type: __expr__
+#                     uid: __expr__
+#                 expression: A
+#                 hide: false
+#                 intervalMs: 1000
+#                 maxDataPoints: 43200
+#                 refId: B
+#                 type: threshold
+#           noDataState: Alerting
+#           execErrState: Error
+#           for: 5m
+#           isPaused: false

@@ -1,0 +1,219 @@
+########################################## EVERY 5m ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'missing-logs-resources-every-5m'
+spec:
+  name: 'every 5m'
+  folderRef: logs
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 5m
+  rules:
+    - uid: ae6mikpmqzjlsc
+      title: missing-logs-resources
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum (count_over_time ({job="fluentbit", host=~"resource-(bay|stage)"} | json | line_format "{{`{{.host}}`}}" [5m])) by (environment)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 1
+                    - 0
+                  type: lt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: Alerting
+      execErrState: Error
+      for: 5m
+      isPaused: false
+    - uid: de6mikpmvzcaoa
+      title: missing-logs-kubernetes
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum (count_over_time({job="fluentbit", cluster=~"(nettle-ops|nettle-prod|nettle-stage)"}[5m])) by (cluster)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 1
+                    - 0
+                  type: lt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: Alerting
+      execErrState: Error
+      for: 5m
+      isPaused: false
+    - uid: be6mikpmyh8n4f
+      title: missing-logs-openvpn-prod
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({job="fluentbit", host=~"teneta-vpn-1-(prod|stage)"}[5m])) by (host)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 1
+                    - 0
+                  type: lt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: Alerting
+      execErrState: Error
+      for: 5m
+      isPaused: false
+    - uid: ee6mikpn3h1c0b
+      title: invalid-tutorial-links-resources-prod
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: '(count_over_time({host="resource-bay"} | json | log =~ `.+"request_uri": "/tutorials/.+".+"status": "404".+` | regexp `\\"request_uri\\": \\"/(?P<request_uri>.*?)\\",` | regexp `\\"http_cf_connecting_ip\\": \\"(?P<http_cf_connecting_ip>.*?)\\"` | regexp `\\"geoip_country_code\\": \\"(?P<geoip_country_code>.*?)\\"` | regexp `\\"http_host\\": \\"(?P<http_host>.*?)\\"`| drop log, environment, host, job, service, type [5m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: https://{{`{{ $labels.http_host }}`}}/{{`{{ $labels.request_uri }}`}}
+      isPaused: false

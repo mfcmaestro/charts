@@ -1,0 +1,1216 @@
+########################################## EVERY 5m ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'services-alert-critical-every-5m'
+spec:
+  name: 'every 5m'
+  folderRef: services-alert-critical
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 5m
+  rules:
+    - uid: ddzgynikgv2tcd
+      title: Authzgateway ErrorRateExceedsLimit 5хх
+      condition: D
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `(5[0-9]{2})` | http_host = "authzgateway.nettlecloud.com" | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [15m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+            step: ""
+        - refId: C
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host = "authzgateway.nettlecloud.com" | status =~ `.*` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [15m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: C
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $C * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: D
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: D
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 15m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 40% per 15m - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: be0jdcsqgj6kge
+      title: 'Authzgateway ErrorRateExceedsLimit 4хх '
+      condition: D
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `(4[0-9]{2})` | http_host = "authzgateway.nettlecloud.com" | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [1h]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+            step: ""
+        - refId: C
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host = "authzgateway.nettlecloud.com" | status =~ `.*` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [1h])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: C
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $C * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: D
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: D
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 0s
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 40% per 1h - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: de0k5slyufldsa
+      title: 'Hemp-Cabinet ErrorRateExceedsLimit 5xx '
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `(5[0-9]{2})` | http_host= `hemp-cabinet.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host= `hemp-cabinet.nettlecloud.com` | status =~ `.*` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 10% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: edzrya36iw934b
+      title: Hemp-Cabinet ErrorRateExceedsLimit  4xx
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `400|40[2-9]|4[1-9][0-9]` | http_host= `hemp-cabinet.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host= `hemp-cabinet.nettlecloud.com` | status =~ `.*` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 30
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 30
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 30% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: ae0k6cigpfegwf
+      title: 'Hemp-Admin ErrorRateExceedsLimit 5xx '
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `(5[0-9]{2})` | http_host= `hemp-admin.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host= `hemp-admin.nettlecloud.com` | status =~ `.*` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 10% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: fdzry41lct5a8e
+      title: Hemp-Admin ErrorRateExceedsLimit 4xx
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `400|40[2-9]|4[1-9][0-9]` | http_host= `hemp-admin.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host= `hemp-admin.nettlecloud.com` | status =~ `.*` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 30
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 30
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 30% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: fe0k7fp473wu8b
+      title: Hemp-Filemanagement ErrorRateExceedsLimit 5xx
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `(5[0-9]{2})` | http_host= `hemp-filemanagement.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host= `hemp-filemanagement.nettlecloud.com` | status =~ `.*` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 10% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: ddzryqbvvr2f4b
+      title: Hemp-Filemanagement ErrorRateExceedsLimit 4xx
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | status =~ `400|40[2-9]|4[1-9][0-9]` | http_host= `hemp-filemanagement.nettlecloud.com` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: 'sum(count_over_time({kubernetes_pod_name=~"prod-ingress-nginx-controller.*"} | json | http_host= `hemp-filemanagement.nettlecloud.com` | status !~ `401` | http_user_agent !~ `.*Cloudflare-Healthchecks.*|.*synthetic-monitoring-agent.*` [5m])) '
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 30
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 30
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 30% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: cdzriz0le9k3kc
+      title: '"/tutorials" ErrorRateExceedsLimit 5xx'
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/tutorials.*?".*?"status":\s*"(5[0-9]{2})".*` [1d]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/tutorials.*?".*?"status":\s*"([0-9]{3})".*` [1d]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 5
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 5
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 0s
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 5% per 24h - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: ee0u69dpfmzgga
+      title: '"/tutorials" ErrorRateExceedsLimit 4xx'
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/tutorials.*?".*?"status":\s*"(4[0-9]{2})".*` [1d]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/tutorials.*?".*?"status":\s*"([0-9]{3})".*` [1d]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 0s
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 40% per 24h - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: fe0u5b3cgh4aof
+      title: '"/restricted" ErrorRateExceedsLimit 4xx'
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/restricted.*?".*?"status":\s*"(4[0-9]{2})".*` [1h]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/restricted.*?".*?"status":\s*"([0-9]{3})".*` [1h]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 0s
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 40% per 1h - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false
+    - uid: ae0u5lqsnuc5ca
+      title: '"/restricted" ErrorRateExceedsLimit 5xx'
+      condition: C
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/restricted.*?".*?"status":\s*"(5[0-9]{2})".*` [15m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: D
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum(count_over_time({host="resource-bay"} | json | log =~ `.*"request_uri":\s*"/restricted.*?".*?"status":\s*"([0-9]{3})".*` [15m]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: D
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / $D * 100)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+                unloadEvaluator:
+                  params:
+                    - 10
+                    - 0
+                  type: lt
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 15m
+      annotations:
+        description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
+        summary: The service’s error rate surpasses the 10% per 1h - [ {{`{{ $values.B.Value }}`}}% ]
+      isPaused: false

@@ -1,0 +1,11 @@
+---
+apiVersion: v2
+name: grafana-operator
+description: A Helm chart to deploy Grafana Operator
+type: application
+version: 1.0.0
+
+dependencies:
+  - name: grafana-operator
+    version: v5.15.1
+    repository: oci://ghcr.io/grafana/helm-charts

@@ -1,0 +1,660 @@
+########################################## EVERY 1m ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'openvpn-server-every-1m'
+spec:
+  name: 'every 1m'
+  folderRef: openvpn-server
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 1m
+  rules:
+    - uid: ae6mikow6kf7ke
+      title: hdd-utilization
+      condition: C
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            editorMode: code
+            expr: "node_filesystem_avail_bytes{fstype=~\"ext.+\",mountpoint=\"/\"} * on(instance) group_left(nodename)\nnode_uname_info{nodename=~\"teneta-vpn-1-(prod|stage)\"} / (1024^3) "
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: E
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            datasource:
+              type: prometheus
+              uid: grafanacloud-kropyva-prom
+            editorMode: code
+            expr: |-
+                (
+                  100 * (1 - (node_filesystem_avail_bytes{fstype=~"ext.+",mountpoint="/"} / node_filesystem_size_bytes{fstype=~"ext.+",mountpoint="/"}))
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename=~"teneta-vpn-1-(prod|stage)"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: E
+        - refId: C
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                      - 75
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params:
+                      - C
+                reducer:
+                  params: []
+                  type: last
+                type: query
+            datasource:
+              type: __expr__
+              uid: __expr__
+            expression: E
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+        - refId: D
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                      - 0
+                      - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: D
+            type: math
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Disk usage exceeds 75% of the total capacity
+        summary: 'Current free space:  {{`{{ $values.D.Value }}`}}Gb'
+      isPaused: false
+    - uid: de6mikowbk7wgf
+      title: cpu-utilization
+      condition: C
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            editorMode: code
+            expr: |-
+                (
+                  100 - avg by (instance) (
+                    irate(node_cpu_seconds_total{mode="idle"}[5m]) * 100
+                  )
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename=~"teneta-vpn-1-(prod|stage)"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: CPU utilization is above threshold 40%
+        summary: 'Current cpu utilization:  {{`{{ $values.B.Value }}`}}%'
+      isPaused: false
+    - uid: be6mikowgk0lcb
+      title: ram-utilization
+      condition: C
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            editorMode: code
+            expr: |-
+                (
+                  avg_over_time((1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))[5m:]) * 100
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename=~"teneta-vpn-1-(prod|stage)"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                      - 0
+                      - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                      - 70
+                      - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Available ram is above threshold 70%
+        summary: 'Current ram utilization:  {{`{{ $values.B.Value }}`}}%'
+      isPaused: false
+    - uid: ae6mikowljta8d
+      title: load-average
+      condition: B
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            editorMode: code
+            expr: |-
+                (
+                  node_load1
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename=~"teneta-vpn-1-(prod|stage)"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 2
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: The load average is above threshold 2
+        summary: 'Current load-average:  {{`{{ $values.A.Value }}`}}'
+      isPaused: false
+    - uid: de6mikowqjlz4b
+      title: network-utilization 30Mbit/sec
+      condition: B
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            editorMode: code
+            expr: |-
+                (
+                  rate(node_network_receive_bytes_total{device=~"eth.+"}[5m]) * 8
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename="teneta-vpn-1-prod"}
+                or
+                (
+                  rate(node_network_transmit_bytes_total{device=~"eth.+"}[5m]) * 8
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename=~"teneta-vpn-1-(prod|stage)"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: C
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / 1000000)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: math
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 30
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: C
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Network utilization is above threshold 30Mbit/s
+        summary: 'Current network utilization:  {{`{{ $values.C.Value }}`}}Mbit/s'
+      isPaused: false
+    - uid: de6mikowvjeo0a
+      title: network-utilization 0.05Mbit/sec
+      condition: B
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            editorMode: code
+            expr: |-
+                (
+                  rate(node_network_receive_bytes_total{device=~"tun0|tun1"}[5m]) * 8
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename="teneta-vpn-1-prod"}
+                or
+                (
+                  rate(node_network_transmit_bytes_total{device=~"tun0|tun1"}[5m]) * 8
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename="teneta-vpn-1-prod"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: C
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: $A / 1000000
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: math
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 5
+                  type: lt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+                name: Expression
+                type: __expr__
+                uid: __expr__
+            expression: C
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: Alerting
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Network utilization is below threshold 0.05Mbit/sec
+        runbook_url: ""
+        summary: 'Current network utilization:  {{`{{ $values.C.Value }}`}}Mbit/s'
+      labels:
+        "": ""
+      isPaused: false
+    - uid: ce6mikox0j7cwa
+      title: disk-i/o-utilization
+      condition: C
+      data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafanacloud-kropyva-prom
+          model:
+            editorMode: code
+            expr: |-
+                (
+                  rate(node_disk_io_time_seconds_total{device!~"loop.+"}[5m])
+                ) * on(instance) group_left(nodename)
+                node_uname_info{nodename=~"teneta-vpn-1-(prod|stage)"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A * 100 )
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: math
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: B
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 5m
+      annotations:
+        description: Available  I/O disk utilization is above threshold 40%
+        summary: 'Current I/O disk utilization:  {{`{{ $values.B.Value }}`}}%'
+      isPaused: false
+    - uid: ee6mikox5j01sc
+      title: OpenVPN Synthetic Check
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: sum by (cluster, kubernetes_pod_name, log) (count_over_time({kubernetes_pod_name=~"openvpn-synthetic-check-(18|22).+", cluster=~"(nettle-stage|nettle-prod)"} | json | logfmt | log =~ `Connection not established.+` [20d]))
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 1
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+                name: Expression
+                type: __expr__
+                uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      for: 0s
+      isPaused: false
