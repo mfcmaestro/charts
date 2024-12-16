@@ -36,10 +36,10 @@ applications:
       version: v3
       valueFiles:
         - values.yaml
-      ignoreDifferences:
-        - group: "*"
-          kind: GrafanaAlertRuleGroup
-          jsonPointers:
-            - /spec/interval
-            - /spec/rules/*/isPaused
-            - /spec/rules/*/data/*/relativeTimeRange/to
+    ignoreDifferences:
+      - group: "*"
+        kind: GrafanaAlertRuleGroup
+        jsonPointers:
+          - /spec/interval
+          # - /spec/rules/*/isPaused
+          # - /spec/rules/*/data/*/relativeTimeRange/to
