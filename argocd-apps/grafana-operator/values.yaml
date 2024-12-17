@@ -32,6 +32,8 @@ grafana:
       role_attribute_path: ("cognito:groups" | contains([*], 'Admin') && 'Admin' || contains([*], 'Editor') && 'Editor' || contains([*], 'grafana-viewer') && 'Viewer' )
       role_attribute_strict: "true"
       login_attribute_path: email
+    unified_alerting:
+      rule_version_record_limit: 1
 
   podAnnotations:
     vault.security.banzaicloud.io/vault-addr: https://vault.default:8200
