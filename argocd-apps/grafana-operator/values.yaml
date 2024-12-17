@@ -35,7 +35,7 @@ grafana:
     unified_alerting:
       rule_version_record_limit: "3"
     dashboards:
-      versions_to_keep: 3
+      versions_to_keep: "3"
 
   podAnnotations:
     vault.security.banzaicloud.io/vault-addr: https://vault.default:8200
