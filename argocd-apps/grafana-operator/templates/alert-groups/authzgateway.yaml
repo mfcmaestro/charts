@@ -10,7 +10,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 10m
+  interval: 5m0s
   rules:
     - uid: fe60gh5yew6psd
       title: HTTP Status Codes 503|500
@@ -21,7 +21,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -35,8 +34,7 @@ spec:
             refId: A
         - refId: B
           relativeTimeRange:
-            from: 800
-            to: 0
+            from: 600
           datasourceUid: __expr__
           model:
             conditions:
@@ -64,7 +62,6 @@ spec:
             type: math
       noDataState: OK
       execErrState: OK
-      isPaused: false
 ---
 ########################################## EVERY 1h ###########################################
 
@@ -78,7 +75,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 1h
+  interval: 1h0s
   rules:
     - uid: be60gh65wl81se
       title: HTTP Status Codes 5xx
@@ -89,7 +86,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 3600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -104,7 +100,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -134,7 +129,6 @@ spec:
       execErrState: OK
       annotations:
         summary: Over the last 1 hour, the number of errors is - {{`{{ $values.A.Value }}`}}.
-      isPaused: false
     - uid: de60gh661l0qob
       title: HTTP Status Codes 4xx
       for: 0s
@@ -144,7 +138,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 3600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -159,7 +152,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -189,7 +181,6 @@ spec:
       execErrState: OK
       annotations:
         summary: Over the last 1 hour, the number of errors is - {{`{{ $values.A.Value }}`}}.
-      isPaused: false
 ---
 ########################################## EVERY 24h ###########################################
 
@@ -203,7 +194,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 24h
+  interval: 24h0s
   rules:
     - uid: ce60gh5z3v668b
       title: HTTP Status Codes 401|403|404
@@ -213,8 +204,7 @@ spec:
         - refId: A
           queryType: instant
           relativeTimeRange:
-            from: 86400
-            to: 0
+            from: 86400         
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -229,7 +219,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -259,7 +248,6 @@ spec:
       execErrState: OK
       annotations:
         summary: Over the last 24 hours, the number of errors is - {{`{{ $values.A.Value }}`}}.
-      isPaused: false
     - uid: ee60gh5zbcv7kc
       title: HTTP Status Codes 499
       for: 0s
@@ -269,7 +257,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 86400
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -311,4 +298,4 @@ spec:
       execErrState: OK
       annotations:
         summary: Over the last 24 hours, the number of errors is - {{`{{ $values.A.Value }}`}}.
-      isPaused: false
+
