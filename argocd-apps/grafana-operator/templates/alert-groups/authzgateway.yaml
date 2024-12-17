@@ -10,7 +10,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 5m
+  interval: 10m
   rules:
     - uid: fe60gh5yew6psd
       title: HTTP Status Codes 503|500
@@ -35,7 +35,7 @@ spec:
             refId: A
         - refId: B
           relativeTimeRange:
-            from: 600
+            from: 800
             to: 0
           datasourceUid: __expr__
           model:
