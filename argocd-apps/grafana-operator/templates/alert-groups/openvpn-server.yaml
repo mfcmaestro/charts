@@ -10,7 +10,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 1m
+  interval: 1m0s
   rules:
     - uid: ae6mikow6kf7ke
       title: hdd-utilization
@@ -19,7 +19,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             editorMode: code
@@ -33,7 +32,6 @@ spec:
         - refId: E
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -54,7 +52,6 @@ spec:
         - refId: C
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -82,7 +79,6 @@ spec:
         - refId: D
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -110,11 +106,10 @@ spec:
             type: math
       noDataState: OK
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: Disk usage exceeds 75% of the total capacity
         summary: 'Current free space:  {{`{{ $values.D.Value }}`}}Gb'
-      isPaused: false
     - uid: de6mikowbk7wgf
       title: cpu-utilization
       condition: C
@@ -122,7 +117,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             editorMode: code
@@ -193,11 +187,10 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: CPU utilization is above threshold 40%
         summary: 'Current cpu utilization:  {{`{{ $values.B.Value }}`}}%'
-      isPaused: false
     - uid: be6mikowgk0lcb
       title: ram-utilization
       condition: C
@@ -205,7 +198,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             editorMode: code
@@ -274,11 +266,10 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: Available ram is above threshold 70%
         summary: 'Current ram utilization:  {{`{{ $values.B.Value }}`}}%'
-      isPaused: false
     - uid: ae6mikowljta8d
       title: load-average
       condition: B
@@ -286,7 +277,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             editorMode: code
@@ -304,7 +294,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -332,11 +321,10 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: The load average is above threshold 2
         summary: 'Current load-average:  {{`{{ $values.A.Value }}`}}'
-      isPaused: false
     - uid: de6mikowqjlz4b
       title: network-utilization 30Mbit/sec
       condition: B
@@ -344,7 +332,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             editorMode: code
@@ -367,7 +354,6 @@ spec:
         - refId: C
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -396,7 +382,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -424,11 +409,10 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: Network utilization is above threshold 30Mbit/s
         summary: 'Current network utilization:  {{`{{ $values.C.Value }}`}}Mbit/s'
-      isPaused: false
     - uid: de6mikowvjeo0a
       title: network-utilization 0.05Mbit/sec
       condition: B
@@ -436,7 +420,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             editorMode: code
@@ -459,7 +442,6 @@ spec:
         - refId: C
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -488,7 +470,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -516,14 +497,13 @@ spec:
             type: threshold
       noDataState: Alerting
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: Network utilization is below threshold 0.05Mbit/sec
         runbook_url: ""
         summary: 'Current network utilization:  {{`{{ $values.C.Value }}`}}Mbit/s'
       labels:
         "": ""
-      isPaused: false
     - uid: ce6mikox0j7cwa
       title: disk-i/o-utilization
       condition: C
@@ -531,7 +511,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             editorMode: code
@@ -600,11 +579,10 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: Available  I/O disk utilization is above threshold 40%
         summary: 'Current I/O disk utilization:  {{`{{ $values.B.Value }}`}}%'
-      isPaused: false
     - uid: ee6mikox5j01sc
       title: OpenVPN Synthetic Check
       condition: B
@@ -613,7 +591,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -628,7 +605,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -657,4 +633,3 @@ spec:
       noDataState: OK
       execErrState: OK
       for: 0s
-      isPaused: false
