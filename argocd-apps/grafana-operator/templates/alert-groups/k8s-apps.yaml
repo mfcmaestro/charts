@@ -474,7 +474,7 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 1h
+      for: 1h0m0s
       annotations:
         description: pod/{{`{{ $labels.pod }}`}} in namespace {{`{{ $labels.namespace }}`}} on container {{`{{ $labels.container}}`}} has been in waiting state for longer than 1 hour.
         runbook_url: ""
@@ -533,7 +533,7 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 10m
+      for: 10m0s
       annotations:
         description: '{{`{{ $value }}`}} Pods of DaemonSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.daemonset }}`}} are not scheduled.'
         runbook_url: ""
