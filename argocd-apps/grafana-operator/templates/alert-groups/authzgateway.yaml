@@ -75,7 +75,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 1h0s
+  interval: 1h0m0s
   rules:
     - uid: be60gh65wl81se
       title: HTTP Status Codes 5xx
