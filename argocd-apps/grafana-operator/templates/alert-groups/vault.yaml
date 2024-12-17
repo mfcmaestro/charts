@@ -10,7 +10,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 1m
+  interval: 1m0s
   rules:
     - uid: ae5znjv0ntmv4b
       title: vault-secrets-webhook
@@ -20,7 +20,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 10800
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -36,7 +35,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -70,4 +68,4 @@ spec:
             "Troubleshooting and recovery instructions:
             https://kropyva.atlassian.net/wiki/spaces/I/pages/360349711/Vault+runbook#vault-operator%2Fvault-secrets-webhook
             "
-      isPaused: false
+
