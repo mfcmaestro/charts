@@ -62,7 +62,7 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 15m0s0s
+      for: for: 15m0s
       annotations:
         description: 'Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} ({{`{{ $labels.container }}`}}) is in waiting state (reason: "CrashLoopBackOff").'
         runbook_url: ""
@@ -125,7 +125,7 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 15m0s0s
+      for: for: 15m0s
       annotations:
         description: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} has been in a non-ready state for longer than 15 minutes.
         runbook_url: ""
@@ -157,7 +157,7 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m0s0s
+      for: for: 15m0s
       annotations:
         description: Deployment generation for {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} does not match, this indicates that the Deployment has failed but has not been rolled back.
         runbook_url: ""
@@ -474,7 +474,7 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 1h
+      for: 1h0m0s
       annotations:
         description: pod/{{`{{ $labels.pod }}`}} in namespace {{`{{ $labels.namespace }}`}} on container {{`{{ $labels.container}}`}} has been in waiting state for longer than 1 hour.
         runbook_url: ""
