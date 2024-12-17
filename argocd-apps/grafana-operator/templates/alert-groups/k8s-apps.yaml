@@ -10,7 +10,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 1m
+  interval: 1m0s
   rules:
     - uid: ddjpp1yijcuf4f
       title: KubePodCrashLooping
@@ -19,7 +19,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -36,7 +35,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -64,14 +62,13 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s0s
       annotations:
         description: 'Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} ({{`{{ $labels.container }}`}}) is in waiting state (reason: "CrashLoopBackOff").'
         runbook_url: ""
         summary: Pod is crash looping.
       labels:
         "": ""
-      isPaused: false
     - uid: ddjpp1yivuc5cb
       title: KubePodNotReady
       condition: C
@@ -79,7 +76,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -103,7 +99,6 @@ spec:
         - refId: C
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -130,14 +125,13 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s0s
       annotations:
         description: Pod {{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} has been in a non-ready state for longer than 15 minutes.
         runbook_url: ""
         summary: Pod has been in a non-ready state for more than 15 minutes.
       labels:
         "": ""
-      isPaused: false
     - uid: ddjpp1yj0u4u8d
       title: KubeDeploymentGenerationMismatch
       condition: A
@@ -145,7 +139,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -164,14 +157,13 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s0s
       annotations:
         description: Deployment generation for {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} does not match, this indicates that the Deployment has failed but has not been rolled back.
         runbook_url: ""
         summary: Deployment generation mismatch due to possible roll-back.
       labels:
         "": ""
-      isPaused: false
     - uid: edjpp1yj8btvkb
       title: KubeDeploymentReplicasMismatch
       condition: A
@@ -179,7 +171,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -204,14 +195,13 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: Deployment {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} has not matched the expected number of replicas for longer than 15 minutes.
         runbook_url: ""
         summary: Deployment has not matched the expected number of replicas.
       labels:
         "": ""
-      isPaused: false
     - uid: ddjpp1yjdbmkgd
       title: KubeDeploymentRolloutStuck
       condition: C
@@ -219,7 +209,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -236,7 +225,6 @@ spec:
         - refId: C
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -263,14 +251,13 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: Rollout of deployment {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} is not progressing for longer than 15 minutes.
         runbook_url: ""
         summary: Deployment rollout is not progressing.
       labels:
         "": ""
-      isPaused: false
     - uid: bdjpp1yjnb7y8c
       title: KubeStatefulSetReplicasMismatch
       condition: A
@@ -278,7 +265,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -303,14 +289,13 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: StatefulSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.statefulset }}`}} has not matched the expected number of replicas for longer than 15 minutes.
         runbook_url: ""
         summary: StatefulSet has not matched the expected number of replicas.
       labels:
         "": ""
-      isPaused: false
     - uid: bdjpp1yjuswzkb
       title: KubeStatefulSetGenerationMismatch
       condition: A
@@ -318,7 +303,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -337,14 +321,13 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: StatefulSet generation for {{`{{ $labels.namespace }}`}}/{{`{{ $labels.statefulset }}`}} does not match, this indicates that the StatefulSet has failed but has not been rolled back.
         runbook_url: ""
         summary: StatefulSet generation mismatch due to possible roll-back.
       labels:
         "": ""
-      isPaused: false
     - uid: ddjpp1yk9sb28e
       title: KubeStatefulSetUpdateNotRolledOut
       condition: A
@@ -352,7 +335,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -385,14 +367,13 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: StatefulSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.statefulset }}`}} update has not been rolled out.
         runbook_url: ""
         summary: StatefulSet update has not been rolled out.
       labels:
         "": ""
-      isPaused: false
     - uid: bdjpp1ykes3r4f
       title: KubeDaemonSetRolloutStuck
       condition: A
@@ -400,7 +381,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -439,14 +419,13 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: DaemonSet {{`{{ $labels.namespace }}`}}/{{`{{ $labels.daemonset }}`}} has not finished or progressed for at least 15 minutes.
         runbook_url: ""
         summary: StatefulSet update has not been rolled out.
       labels:
         "": ""
-      isPaused: false
     - uid: ddjpp1ykjrwg0d
       title: KubeContainerWaiting
       condition: A
@@ -454,7 +433,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -501,7 +479,6 @@ spec:
         description: pod/{{`{{ $labels.pod }}`}} in namespace {{`{{ $labels.namespace }}`}} on container {{`{{ $labels.container}}`}} has been in waiting state for longer than 1 hour.
         runbook_url: ""
         summary: Pod container waiting longer than 1 hour.
-      isPaused: false
     - uid: adjpp1ykr9lhce
       title: KubeDaemonSetNotScheduled
       condition: A
@@ -509,7 +486,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -529,7 +505,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -565,7 +540,6 @@ spec:
         summary: DaemonSet pods are not scheduled.
       labels:
         "": ""
-      isPaused: false
     - uid: cdjpp1ykyraioa
       title: KubeDaemonSetMisScheduled
       condition: A
@@ -573,7 +547,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -590,7 +563,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -626,7 +598,6 @@ spec:
         summary: DaemonSet pods are misscheduled.
       labels:
         "": ""
-      isPaused: false
     - uid: bdjpp1yl3r37ke
       title: KubeJobNotCompleted
       condition: A
@@ -634,7 +605,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -654,7 +624,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -689,7 +658,6 @@ spec:
         summary: Job did not complete in time.
       labels:
         "": ""
-      isPaused: false
     - uid: fdjpp1ylb8s8wf
       title: KubeJobFailed
       condition: B
@@ -697,7 +665,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -714,7 +681,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -742,14 +708,13 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: Job {{`{{ $labels.namespace }}`}}/{{`{{ $labels.job_name }}`}} failed to complete. Removing failed job after investigation should clear this alert.
         runbook_url: ""
         summary: Job failed to complete.
       labels:
         "": ""
-      isPaused: false
     - uid: cdjpp1yliqha8f
       title: KubeHpaReplicasMismatch
       condition: A
@@ -757,7 +722,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -786,14 +750,13 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: HPA {{`{{ $labels.namespace }}`}}/{{`{{ $labels.horizontalpodautoscaler  }}`}} has not matched the desired number of replicas for longer than 15 minutes.
         runbook_url: ""
         summary: HPA has not matched desired number of replicas.
       labels:
         "": ""
-      isPaused: false
     - uid: fdjpp1ylq86bke
       title: KubeHpaMaxedOut
       condition: A
@@ -801,7 +764,6 @@ spec:
         - refId: A
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafanacloud-kropyva-prom
           model:
             datasource:
@@ -820,11 +782,10 @@ spec:
             refId: A
       noDataState: OK
       execErrState: OK
-      for: 15m
+      for: 15m0s
       annotations:
         description: HPA {{`{{ $labels.namespace }}`}}/{{`{{ $labels.horizontalpodautoscaler }}`}} has been running at max replicas for longer than 15 minutes.
         runbook_url: ""
         summary: HPA is running at max replicas.
       labels:
         "": ""
-      isPaused: false
