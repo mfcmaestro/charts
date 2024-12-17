@@ -33,7 +33,9 @@ grafana:
       role_attribute_strict: "true"
       login_attribute_path: email
     unified_alerting:
-      rule_version_record_limit: "1"
+      rule_version_record_limit: "3"
+    dashboards:
+      versions_to_keep: 3
 
   podAnnotations:
     vault.security.banzaicloud.io/vault-addr: https://vault.default:8200
