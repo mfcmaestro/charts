@@ -10,7 +10,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 1h0s
+  interval: 1h0m0s
   rules:
     - uid: ae6mikoil4bggc
       title: Storagebox disk space usage.
