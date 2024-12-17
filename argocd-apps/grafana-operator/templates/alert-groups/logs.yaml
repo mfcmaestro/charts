@@ -10,7 +10,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 5m
+  interval: 5m0s
   rules:
     - uid: ae6mikpmqzjlsc
       title: missing-logs-resources
@@ -20,7 +20,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -60,8 +59,7 @@ spec:
             type: threshold
       noDataState: Alerting
       execErrState: Error
-      for: 5m
-      isPaused: false
+      for: 5m0s
     - uid: de6mikpmvzcaoa
       title: missing-logs-kubernetes
       condition: B
@@ -70,7 +68,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -110,8 +107,7 @@ spec:
             type: threshold
       noDataState: Alerting
       execErrState: Error
-      for: 5m
-      isPaused: false
+      for: 5m0s
     - uid: be6mikpmyh8n4f
       title: missing-logs-openvpn-prod
       condition: B
@@ -120,7 +116,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -160,8 +155,7 @@ spec:
             type: threshold
       noDataState: Alerting
       execErrState: Error
-      for: 5m
-      isPaused: false
+      for: 5m0s
     - uid: ee6mikpn3h1c0b
       title: invalid-tutorial-links-resources-prod
       condition: B
@@ -170,7 +164,6 @@ spec:
           queryType: instant
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: grafana-logs
           model:
             datasource:
@@ -185,7 +178,6 @@ spec:
         - refId: B
           relativeTimeRange:
             from: 600
-            to: 0
           datasourceUid: __expr__
           model:
             conditions:
@@ -213,7 +205,6 @@ spec:
             type: threshold
       noDataState: OK
       execErrState: OK
-      for: 5m
+      for: 5m0s
       annotations:
         description: https://{{`{{ $labels.http_host }}`}}/{{`{{ $labels.request_uri }}`}}
-      isPaused: false
