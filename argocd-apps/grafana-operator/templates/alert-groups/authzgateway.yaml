@@ -194,7 +194,7 @@ spec:
   instanceSelector:
     matchLabels:
       instance: {{ $.Values.global.instanceNameLabel }}
-  interval: 24h0s
+  interval: 24h0m0s
   rules:
     - uid: ce60gh5z3v668b
       title: HTTP Status Codes 401|403|404
