@@ -54,7 +54,6 @@ spec:
           {{- end }}
           {{- if .Values.grafana.persistentVolumeClaim.enabled }}
           volumes:
-            {{- if .Values.grafana.persistentVolumeClaim.enabled }}
             - name: grafana-data
               persistentVolumeClaim:
                 claimName: {{ .Values.grafana.persistentVolumeClaim.name | default "grafana-pvc" }}
