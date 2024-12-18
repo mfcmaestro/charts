@@ -7,9 +7,8 @@ global:
 grafana:
 
   persistentVolumeClaim:
-    enabled: true
-    accessMode: "ReadWriteOnce"
-    size: "2Gi"
+    enabled: false
+
 
   config:
     server:
@@ -18,6 +17,8 @@ grafana:
     security:
       cookie_secure: "true"
       cookie_samesite: lax
+    auth.basic:
+      enabled: "true"
     auth:
       disable_login_form: "false"
     auth.generic_oauth:
@@ -36,13 +37,19 @@ grafana:
       rule_version_record_limit: "3"
     dashboards:
       versions_to_keep: "3"
+    database:
+      type: postgres
+      host: postgres-postgresql.postgres.svc.cluster.local
+      name: grafana-backend
+      user: ${PG_USER}
+      password: ${PG_PASSWORD}
 
   podAnnotations:
     vault.security.banzaicloud.io/vault-addr: https://vault.default:8200
     vault.security.banzaicloud.io/vault-role: default
     vault.security.banzaicloud.io/vault-tls-secret: vault-tls # pragma: allowlist secret
 
-  image: grafana/grafana:11.3.0
+  image: grafana/grafana:11.4.0
 
   env:
     - name: OIDC_ISSUER
@@ -51,8 +58,10 @@ grafana:
       value: vault:secret/data/nettle/aws/grafana/oidc#OIDC_CLIENT_SECRET
     - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
       value: vault:secret/data/nettle/aws/grafana/oidc#OIDC_CLIENT_ID
-
-  resources: {}
+    - name: PG_USER
+      value: vault:secret/data/nettle/grafana/postgres#PG_USER
+    - name: PG_PASSWORD
+      value: vault:secret/data/nettle/grafana/postgres#PG_PASSWORD
 
   ingress:
     enabled: true
