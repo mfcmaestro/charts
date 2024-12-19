@@ -24,15 +24,16 @@ spec:
           - - notification_pagerduty
             - =
             - "true"
-      - receiver: nettle-pagerduty
-        continue: true
-        object_matchers:
-          - - cluster
-            - =
-            - nettle-prod
-      - receiver: nettle-pagerduty
-        continue: true
-        object_matchers:
-          - - nodename
-            - =
-            - teneta-vpn-1-prod
+        routes:
+          - receiver: nettle-pagerduty
+            continue: true
+            object_matchers:
+              - - cluster
+                - =
+                - nettle-prod
+          - receiver: nettle-pagerduty
+            continue: true
+            object_matchers:
+              - - nodename
+                - =
+                - teneta-vpn-1-prod
