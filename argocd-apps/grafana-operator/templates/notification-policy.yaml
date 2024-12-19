@@ -11,28 +11,30 @@ spec:
     group_by:
       - '...'
     routes:
-      - receiver: OnCall Alerts
-        object_matchers:
+      - receiver: grafana-cloud-oncall
         continue: true
-        repeat_interval: 1m
-          - - notification_slack
-            - =
-            - "true"
-      - receiver: Pagerduty
-        object_matchers:
+        repeat_interval: 99w
+      - receiver: nettle-pagerduty
         continue: true
-          - - notification_pagerduty
-            - =
-            - "true"
-      - receiver: Pagerduty
         object_matchers:
-        continue: true
-          - - cluster
+          - - grafana_folder
             - =
-            - nettle-prod
-      - receiver: Pagerduty
+            - openvpn-server-prod
+          - - alertname
+            - =~
+            - OpenVPN-.*Synthetic Check
+      - receiver: nettle-pagerduty
+        continue: true
         object_matchers:
-        continue: true
-          - - nodename
+          - - grafana_folder
             - =
-            - teneta-vpn-1-prod
+            - openvpn-server-prod
+          - - alertname
+            - =
+            - network-utilization-<2Mbit/sec
+      - receiver: nettle-pagerduty
+        continue: true
+        object_matchers:
+          - - alertname
+            - =
+            - vault-secrets-webhook
