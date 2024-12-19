@@ -11,26 +11,26 @@ spec:
     group_by:
       - '...'
     routes:
-      - receiver: OnCall Alerts
+      - receiver: grafana-cloud-oncall
         repeat_interval: 1m
         continue: true
         object_matchers:
           - - notification_slack
             - =
             - "true"
-      - receiver: Pagerduty
+      - receiver: nettle-pagerduty
         continue: true
         object_matchers:
           - - notification_pagerduty
             - =
             - "true"
-      - receiver: Pagerduty
+      - receiver: nettle-pagerduty
         continue: true
         object_matchers:
           - - cluster
             - =
             - nettle-prod
-      - receiver: Pagerduty
+      - receiver: nettle-pagerduty
         continue: true
         object_matchers:
           - - nodename
