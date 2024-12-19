@@ -12,22 +12,26 @@ spec:
       - '...'
     routes:
       - receiver: OnCall Alerts
-        object_matchers:
         repeat_interval: 1m
+        continue: true
+        object_matchers:
           - - notification_slack
             - =
             - "true"
       - receiver: Pagerduty
+        continue: true
         object_matchers:
           - - notification_pagerduty
             - =
             - "true"
       - receiver: Pagerduty
+        continue: true
         object_matchers:
           - - cluster
             - =
             - nettle-prod
       - receiver: Pagerduty
+        continue: true
         object_matchers:
           - - nodename
             - =
