@@ -1,38 +1,38 @@
-# apiVersion: grafana.integreatly.org/v1beta1
-# kind: GrafanaNotificationPolicy
-# metadata:
-#   name: nettle-notification-policy
-# spec:
-#   instanceSelector:
-#     matchLabels:
-#       instance: {{ $.Values.global.instanceNameLabel }}
-#   route:
-#     receiver: grafana-default-email
-#     group_by:
-#       - '...'
-#     routes:
-#       - receiver: OnCall Alerts
-#         object_matchers:
-#         continue: true
-#         repeat_interval: 1m
-#           - - notification_slack
-#             - =
-#             - "true"
-#       - receiver: Pagerduty
-#         object_matchers:
-#         continue: true
-#           - - notification_pagerduty
-#             - =
-#             - "true"
-#       - receiver: Pagerduty
-#         object_matchers:
-#         continue: true
-#           - - cluster
-#             - =
-#             - nettle-prod
-#       - receiver: Pagerduty
-#         object_matchers:
-#         continue: true
-#           - - nodename
-#             - =
-#             - teneta-vpn-1-prod
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaNotificationPolicy
+metadata:
+  name: nettle-notification-policy
+spec:
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  route:
+    receiver: grafana-default-email
+    group_by:
+      - '...'
+    routes:
+      - receiver: OnCall Alerts
+        object_matchers:
+        continue: true
+        repeat_interval: 1m
+          - - notification_slack
+            - =
+            - "true"
+      - receiver: Pagerduty
+        object_matchers:
+        continue: true
+          - - notification_pagerduty
+            - =
+            - "true"
+      - receiver: Pagerduty
+        object_matchers:
+        continue: true
+          - - cluster
+            - =
+            - nettle-prod
+      - receiver: Pagerduty
+        object_matchers:
+        continue: true
+          - - nodename
+            - =
+            - teneta-vpn-1-prod
