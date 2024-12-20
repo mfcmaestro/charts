@@ -1,4 +1,4 @@
-######################################### EVERY 1m ###########################################
+########################################## EVERY 1m ###########################################
 
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaAlertRuleGroup
@@ -206,7 +206,7 @@ spec:
       labels:
         notification_slack: "true"
 
-    - uid: ddjpp1yjdbmkgd
+    - uid: bdjpp1yjnb7y8c
       title: KubeStatefulSetReplicasMismatch
       condition: A
       data:
