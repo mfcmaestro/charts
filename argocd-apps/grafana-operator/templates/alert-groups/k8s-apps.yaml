@@ -555,7 +555,7 @@ spec:
       labels:
         notification_slack: "true"
 
-        - uid: cdjpp1ykyraioa
+    - uid: cdjpp1ykyraioa
       title: KubeJobFailed
       condition: B
       data:
