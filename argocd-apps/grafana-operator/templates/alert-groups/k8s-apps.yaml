@@ -1,4 +1,4 @@
-########################################## EVERY 1m ###########################################
+######################################### EVERY 1m ###########################################
 
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaAlertRuleGroup
@@ -68,7 +68,8 @@ spec:
         runbook_url: ""
         summary: Pod is crash looping.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: ddjpp1yivuc5cb
       title: KubePodNotReady
       condition: C
@@ -131,7 +132,8 @@ spec:
         runbook_url: ""
         summary: Pod has been in a non-ready state for more than 15 minutes.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: ddjpp1yj0u4u8d
       title: KubeDeploymentGenerationMismatch
       condition: A
@@ -163,7 +165,8 @@ spec:
         runbook_url: ""
         summary: Deployment generation mismatch due to possible roll-back.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: edjpp1yj8btvkb
       title: KubeDeploymentReplicasMismatch
       condition: A
@@ -201,64 +204,9 @@ spec:
         runbook_url: ""
         summary: Deployment has not matched the expected number of replicas.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: ddjpp1yjdbmkgd
-      title: KubeDeploymentRolloutStuck
-      condition: C
-      data:
-        - refId: A
-          relativeTimeRange:
-            from: 600
-          datasourceUid: grafanacloud-kropyva-prom
-          model:
-            datasource:
-              type: prometheus
-              uid: grafanacloud-kropyva-prom
-            editorMode: code
-            expr: kube_deployment_status_condition{condition="Progressing", status="false",job!=""}
-            instant: true
-            intervalMs: 1000
-            legendFormat: __auto
-            maxDataPoints: 43200
-            range: false
-            refId: A
-        - refId: C
-          relativeTimeRange:
-            from: 600
-          datasourceUid: __expr__
-          model:
-            conditions:
-              - evaluator:
-                  params:
-                    - 0
-                  type: gt
-                operator:
-                  type: and
-                query:
-                  params:
-                    - C
-                reducer:
-                  params: []
-                  type: last
-                type: query
-            datasource:
-              type: __expr__
-              uid: __expr__
-            expression: A
-            intervalMs: 1000
-            maxDataPoints: 43200
-            refId: C
-            type: threshold
-      noDataState: OK
-      execErrState: OK
-      for: 15m0s
-      annotations:
-        description: Rollout of deployment {{`{{ $labels.namespace }}`}}/{{`{{ $labels.deployment }}`}} is not progressing for longer than 15 minutes.
-        runbook_url: ""
-        summary: Deployment rollout is not progressing.
-      labels:
-        "": ""
-    - uid: bdjpp1yjnb7y8c
       title: KubeStatefulSetReplicasMismatch
       condition: A
       data:
@@ -295,7 +243,8 @@ spec:
         runbook_url: ""
         summary: StatefulSet has not matched the expected number of replicas.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: bdjpp1yjuswzkb
       title: KubeStatefulSetGenerationMismatch
       condition: A
@@ -327,7 +276,8 @@ spec:
         runbook_url: ""
         summary: StatefulSet generation mismatch due to possible roll-back.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: ddjpp1yk9sb28e
       title: KubeStatefulSetUpdateNotRolledOut
       condition: A
@@ -373,7 +323,8 @@ spec:
         runbook_url: ""
         summary: StatefulSet update has not been rolled out.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: bdjpp1ykes3r4f
       title: KubeDaemonSetRolloutStuck
       condition: A
@@ -425,7 +376,8 @@ spec:
         runbook_url: ""
         summary: StatefulSet update has not been rolled out.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: ddjpp1ykjrwg0d
       title: KubeContainerWaiting
       condition: A
@@ -479,6 +431,9 @@ spec:
         description: pod/{{`{{ $labels.pod }}`}} in namespace {{`{{ $labels.namespace }}`}} on container {{`{{ $labels.container}}`}} has been in waiting state for longer than 1 hour.
         runbook_url: ""
         summary: Pod container waiting longer than 1 hour.
+      labels:
+        notification_slack: "true"
+
     - uid: adjpp1ykr9lhce
       title: KubeDaemonSetNotScheduled
       condition: A
@@ -539,7 +494,8 @@ spec:
         runbook_url: ""
         summary: DaemonSet pods are not scheduled.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: cdjpp1ykyraioa
       title: KubeDaemonSetMisScheduled
       condition: A
@@ -597,68 +553,9 @@ spec:
         runbook_url: ""
         summary: DaemonSet pods are misscheduled.
       labels:
-        "": ""
-    - uid: bdjpp1yl3r37ke
-      title: KubeJobNotCompleted
-      condition: A
-      data:
-        - refId: A
-          relativeTimeRange:
-            from: 600
-          datasourceUid: grafanacloud-kropyva-prom
-          model:
-            datasource:
-              type: prometheus
-              uid: grafanacloud-kropyva-prom
-            editorMode: code
-            expr: |-
-                time() - max by(namespace, job_name, cluster) (kube_job_status_start_time{job!=""}
-                  and
-                kube_job_status_active{job!=""} > 0)
-            instant: true
-            intervalMs: 1000
-            legendFormat: __auto
-            maxDataPoints: 43200
-            range: false
-            refId: A
-        - refId: B
-          relativeTimeRange:
-            from: 600
-          datasourceUid: __expr__
-          model:
-            conditions:
-              - evaluator:
-                  params:
-                    - 43200
-                    - 0
-                  type: gt
-                operator:
-                  type: and
-                query:
-                  params: []
-                reducer:
-                  params: []
-                  type: avg
-                type: query
-            datasource:
-              name: Expression
-              type: __expr__
-              uid: __expr__
-            expression: A
-            intervalMs: 1000
-            maxDataPoints: 43200
-            refId: B
-            type: threshold
-      noDataState: OK
-      execErrState: OK
-      for: 0s
-      annotations:
-        description: Job {{`{{ $labels.namespace }}`}}/{{`{{ $labels.job_name }}`}} is taking more than {{`{{ "43200" | humanizeDuration }}`}} to complete.
-        runbook_url: ""
-        summary: Job did not complete in time.
-      labels:
-        "": ""
-    - uid: fdjpp1ylb8s8wf
+        notification_slack: "true"
+
+        - uid: cdjpp1ykyraioa
       title: KubeJobFailed
       condition: B
       data:
@@ -714,7 +611,8 @@ spec:
         runbook_url: ""
         summary: Job failed to complete.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: cdjpp1yliqha8f
       title: KubeHpaReplicasMismatch
       condition: A
@@ -756,7 +654,8 @@ spec:
         runbook_url: ""
         summary: HPA has not matched desired number of replicas.
       labels:
-        "": ""
+        notification_slack: "true"
+
     - uid: fdjpp1ylq86bke
       title: KubeHpaMaxedOut
       condition: A
@@ -788,4 +687,4 @@ spec:
         runbook_url: ""
         summary: HPA is running at max replicas.
       labels:
-        "": ""
+        notification_slack: "true"

@@ -64,3 +64,6 @@ spec:
       annotations:
         description: Storagebox last checked disk space usage is {{`{{ $labels.disk_space }}`}}%
         summary: Storagebox disk space usage > 95%
+      labels:
+        environment: "prod"
+        notification_slack: "true"

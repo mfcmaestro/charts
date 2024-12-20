@@ -93,3 +93,5 @@ spec:
       annotations:
         description: '{{`{{ $labels.job }}`}} update success rate is {{`{{ $values.B.Value }}`}}%.'
         summary: Update success rate below 100%
+      labels:
+        notification_slack: "true"

@@ -110,6 +110,9 @@ spec:
       annotations:
         description: Disk usage exceeds 75% of the total capacity
         summary: 'Current free space:  {{`{{ $values.D.Value }}`}}Gb'
+      labels:
+        notification_slack: "true"
+
     - uid: de6mikowbk7wgf
       title: cpu-utilization
       condition: C
@@ -191,6 +194,9 @@ spec:
       annotations:
         description: CPU utilization is above threshold 40%
         summary: 'Current cpu utilization:  {{`{{ $values.B.Value }}`}}%'
+      labels:
+        notification_slack: "true"
+
     - uid: be6mikowgk0lcb
       title: ram-utilization
       condition: C
@@ -270,6 +276,9 @@ spec:
       annotations:
         description: Available ram is above threshold 70%
         summary: 'Current ram utilization:  {{`{{ $values.B.Value }}`}}%'
+      labels:
+        notification_slack: "true"
+
     - uid: ae6mikowljta8d
       title: load-average
       condition: B
@@ -325,6 +334,9 @@ spec:
       annotations:
         description: The load average is above threshold 2
         summary: 'Current load-average:  {{`{{ $values.A.Value }}`}}'
+      labels:
+        notification_slack: "true"
+
     - uid: de6mikowqjlz4b
       title: network-utilization 30Mbit/sec
       condition: B
@@ -413,6 +425,9 @@ spec:
       annotations:
         description: Network utilization is above threshold 30Mbit/s
         summary: 'Current network utilization:  {{`{{ $values.C.Value }}`}}Mbit/s'
+      labels:
+        notification_slack: "true"
+
     - uid: de6mikowvjeo0a
       title: network-utilization 0.05Mbit/sec
       condition: B
@@ -503,7 +518,9 @@ spec:
         runbook_url: ""
         summary: 'Current network utilization:  {{`{{ $values.C.Value }}`}}Mbit/s'
       labels:
-        "": ""
+        notification_pagerduty: "true"
+        notification_slack: "true"
+
     - uid: ce6mikox0j7cwa
       title: disk-i/o-utilization
       condition: C
@@ -583,6 +600,9 @@ spec:
       annotations:
         description: Available  I/O disk utilization is above threshold 40%
         summary: 'Current I/O disk utilization:  {{`{{ $values.B.Value }}`}}%'
+      labels:
+        notification_slack: "true"
+
     - uid: ee6mikox5j01sc
       title: OpenVPN Synthetic Check
       condition: B
@@ -633,3 +653,6 @@ spec:
       noDataState: OK
       execErrState: OK
       for: 0s
+      labels:
+        notification_pagerduty: "true"
+        notification_slack: "true"

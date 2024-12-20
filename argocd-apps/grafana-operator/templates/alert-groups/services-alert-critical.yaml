@@ -110,6 +110,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 40% per 15m - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: be0jdcsqgj6kge
       title: 'Authzgateway ErrorRateExceedsLimit 4хх '
       condition: D
@@ -208,6 +212,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 40% per 1h - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: de0k5slyufldsa
       title: 'Hemp-Cabinet ErrorRateExceedsLimit 5xx '
       condition: C
@@ -305,6 +313,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 10% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: edzrya36iw934b
       title: Hemp-Cabinet ErrorRateExceedsLimit  4xx
       condition: C
@@ -402,6 +414,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 30% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: ae0k6cigpfegwf
       title: 'Hemp-Admin ErrorRateExceedsLimit 5xx '
       condition: C
@@ -499,6 +515,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 10% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: fdzry41lct5a8e
       title: Hemp-Admin ErrorRateExceedsLimit 4xx
       condition: C
@@ -596,6 +616,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 30% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: fe0k7fp473wu8b
       title: Hemp-Filemanagement ErrorRateExceedsLimit 5xx
       condition: C
@@ -693,6 +717,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 10% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: ddzryqbvvr2f4b
       title: Hemp-Filemanagement ErrorRateExceedsLimit 4xx
       condition: C
@@ -790,6 +818,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 30% per 5m - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: cdzriz0le9k3kc
       title: '"/tutorials" ErrorRateExceedsLimit 5xx'
       condition: C
@@ -887,6 +919,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 5% per 24h - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: ee0u69dpfmzgga
       title: '"/tutorials" ErrorRateExceedsLimit 4xx'
       condition: C
@@ -984,6 +1020,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 40% per 24h - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: fe0u5b3cgh4aof
       title: '"/restricted" ErrorRateExceedsLimit 4xx'
       condition: C
@@ -1081,6 +1121,10 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 40% per 1h - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"
+
     - uid: ae0u5lqsnuc5ca
       title: '"/restricted" ErrorRateExceedsLimit 5xx'
       condition: C
@@ -1178,3 +1222,6 @@ spec:
       annotations:
         description: Raised when the service’s error rate surpasses the acceptable limit within one minute.
         summary: The service’s error rate surpasses the 10% per 1h - [ {{`{{ $values.B.Value }}`}}% ]
+      labels:
+        environment: "prod"
+        notification_slack: "true"

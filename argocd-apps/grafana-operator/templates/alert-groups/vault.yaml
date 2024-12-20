@@ -68,3 +68,6 @@ spec:
             "Troubleshooting and recovery instructions:
             https://kropyva.atlassian.net/wiki/spaces/I/pages/360349711/Vault+runbook#vault-operator%2Fvault-secrets-webhook
             "
+          labels:
+            notification_pagerduty: "true"
+            notification_slack: "true"

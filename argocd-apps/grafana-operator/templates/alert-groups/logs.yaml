@@ -60,6 +60,9 @@ spec:
       noDataState: Alerting
       execErrState: Error
       for: 5m0s
+      labels:
+        notification_slack: "true"
+
     - uid: de6mikpmvzcaoa
       title: missing-logs-kubernetes
       condition: B
@@ -108,6 +111,9 @@ spec:
       noDataState: Alerting
       execErrState: Error
       for: 5m0s
+      labels:
+        notification_slack: "true"
+
     - uid: be6mikpmyh8n4f
       title: missing-logs-openvpn-prod
       condition: B
@@ -156,6 +162,9 @@ spec:
       noDataState: Alerting
       execErrState: Error
       for: 5m0s
+      labels:
+        notification_slack: "true"
+
     - uid: ee6mikpn3h1c0b
       title: invalid-tutorial-links-resources-prod
       condition: B
@@ -208,3 +217,5 @@ spec:
       for: 5m0s
       annotations:
         description: https://{{`{{ $labels.http_host }}`}}/{{`{{ $labels.request_uri }}`}}
+      labels:
+        notification_slack: "true"
