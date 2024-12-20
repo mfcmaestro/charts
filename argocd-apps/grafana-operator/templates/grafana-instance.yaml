@@ -18,12 +18,12 @@ spec:
       {{- toYaml .Values.grafana.config | nindent 4 }}
   deployment:
     spec:
+      replicas: {{ .Values.grafana.replicaCount }}
       template:
         metadata:
           annotations:
             {{- toYaml .Values.grafana.podAnnotations | nindent 12 }}
         spec:
-          replicas: {{ .Values.grafana.replicaCount }}
           securityContext:
             fsGroup: 1001
           containers:
