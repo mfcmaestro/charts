@@ -9,7 +9,7 @@ grafana:
   persistentVolumeClaim:
     enabled: false
 
-  replicaCount: 2
+  replicaCount: 1
 
   config:
     server:
