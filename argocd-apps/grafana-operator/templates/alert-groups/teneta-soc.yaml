@@ -1,0 +1,438 @@
+######################################### EVERY 1m ###########################################
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaAlertRuleGroup
+metadata:
+  name: 'teneta-cloud-soc-every-1m'
+spec:
+  name: 'every 1m'
+  folderRef: teneta-cloud-soc
+  instanceSelector:
+    matchLabels:
+      instance: {{ $.Values.global.instanceNameLabel }}
+  interval: 1m0s
+  rules:
+    - uid: ee5f7anhft7uod
+      title: 'Teneta-Cloud [ 473 ] Spike Detection: Possible Spam Activity'
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: |-
+                sum (count_over_time({cluster=~`nettle-stage|nettle-prod`} | json | msg=`REQUEST_AUDIT` | status=`473` [5m]))
+                by (client_ip, app_name, url, hemp_device_uid, cluster)
+            instant: true
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 25
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: 'Over the last 5m, the number of attempts by the client is: {{`{{ $values.A.Value }}`}}'
+      for: 0s
+      labels:
+        notification_slack: "true"
+        slack_channel: "alert-soc"
+
+    - uid: ee5soxlcwuznkd
+      title: 'Teneta-Cloud 500 Spike Detection: Unknown Error or Potential Database Corruption'
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: |-
+                sum (count_over_time({cluster=~`nettle-stage|nettle-prod`} | json | msg=`REQUEST_AUDIT` | status=`500` [5m]))
+                by (app_name, cluster)
+            instant: true
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 25
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: 'Over the last 5m, the number of errors by the app is: {{`{{ $values.A.Value }}`}}'
+      for: 0s
+      labels:
+        notification_slack: "true"
+        slack_channel: "alert-soc"
+
+    - uid: ce5sp6a4rnk00a
+      title: 'Teneta-Cloud 3001/3002 Spike Detection: Scaling or Error Issue'
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: |-
+                sum (count_over_time({cluster=~`nettle-stage|nettle-prod`} | json | msg=`REQUEST_AUDIT` | status=~`3001|3002` [5m]))
+                by (app_name, cluster)
+            instant: true
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 25
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: 'Over the last 5m, the number of errors by the app is: {{`{{ $values.A.Value }}`}}'
+      for: 0s
+      labels:
+        notification_slack: "true"
+        slack_channel: "alert-soc"
+
+    - uid: ae5sx78bgbchsd
+      title: 'Teneta-Cloud Monitor Clients: Check request_count_per_interval for Possible Spam'
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: |-
+                last_over_time({cluster=~`nettle-stage|nettle-prod`} | json | msg=`REQUEST_AUDIT` | request_count_per_interval =~ `.*` | unwrap request_count_per_interval [1m])
+                by (app_name, cluster)
+            instant: true
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 50
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: 'Over the last 1m, the number of requests to the app is: {{`{{ $values.A.Value }}`}}'
+      for: 0s
+      labels:
+        notification_slack: "true"
+        slack_channel: "alert-soc"
+
+    - uid: ce5syo9c07abkd
+      title: 'Teneta-Cloud Monitor Clients: Check traffic_size_per_interval for Brute Force Attempt'
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: |-
+                last_over_time({cluster=~`nettle-stage|nettle-prod`} | json | msg=`REQUEST_AUDIT` | traffic_size_per_interval =~ `.*` | unwrap request_count_per_interval [10m])
+                by (app_name, cluster)
+            instant: true
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 0
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: round($A / 1048576)
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: math
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 500
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: C
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: 'Over the last 10m, the raffic_size_per_interval to the app is: {{`{{ $values.C.Value }}`}}'
+      for: 0s
+      labels:
+        notification_slack: "true"
+        slack_channel: "alert-soc"
+
+    - uid: be5ec7ghht4aoc
+      title: 'Teneta-Cloud [ 401 ] Spike Detection: Possible Token Brute Force'
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: |-
+                sum (count_over_time({cluster=~`nettle-stage|nettle-prod`} | json | msg=`REQUEST_AUDIT` | status=`401` | hemp_device_uid !="9616bd6c-1e91-4e02-85a1-f4fa2501a019" [5m]))
+                by (client_ip, app_name, url, hemp_device_uid, cluster)
+            instant: true
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 40
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: 'Over the last 5m, the number of attempts by the client is: {{`{{ $values.A.Value }}`}}'
+      for: 0s
+      labels:
+        notification_slack: "true"
+        slack_channel: "alert-soc"
+
+    - uid: be5f71f7e2874a
+      title: 'Teneta-Cloud 472 Spike Detection: Possible Brute Force or Spam Activity'
+      condition: B
+      data:
+        - refId: A
+          queryType: instant
+          relativeTimeRange:
+            from: 600
+          datasourceUid: grafana-logs
+          model:
+            datasource:
+              type: loki
+              uid: grafana-logs
+            editorMode: code
+            expr: |-
+                sum (count_over_time({cluster=~`nettle-stage|nettle-prod`} | json | msg=`REQUEST_AUDIT` | status=`472` [5m]))
+                by (client_ip, app_name, url, hemp_device_uid, cluster)
+            instant: true
+            intervalMs: 1000
+            maxDataPoints: 43200
+            queryType: instant
+            refId: A
+        - refId: B
+          datasourceUid: __expr__
+          model:
+            conditions:
+              - evaluator:
+                  params:
+                    - 25
+                    - 0
+                  type: gt
+                operator:
+                  type: and
+                query:
+                  params: []
+                reducer:
+                  params: []
+                  type: avg
+                type: query
+            datasource:
+              name: Expression
+              type: __expr__
+              uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: B
+            type: threshold
+      noDataState: OK
+      execErrState: OK
+      annotations:
+        summary: 'Over the last 5m, the number of attempts by the client is: {{`{{ $values.A.Value }}`}}'
+      for: 0s
+      labels:
+        notification_slack: "true"
+        slack_channel: "alert-soc"
