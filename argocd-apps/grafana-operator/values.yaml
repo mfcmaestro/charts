@@ -176,6 +176,8 @@ folders:
     title: "kropyva-serivces"
   services-alert-critical:
     title: "services-alert-critical"
+  teneta-cloud-soc:
+    title: "teneta-cloud-soc"
 
 contactPoints:
   - name: grafana-cloud-oncall
