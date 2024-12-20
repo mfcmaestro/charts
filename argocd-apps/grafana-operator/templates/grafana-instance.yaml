@@ -23,6 +23,7 @@ spec:
           annotations:
             {{- toYaml .Values.grafana.podAnnotations | nindent 12 }}
         spec:
+          replicas: {{ .Values.grafana.replicaCount }}
           securityContext:
             fsGroup: 1001
           containers:
