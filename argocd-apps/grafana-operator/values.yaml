@@ -117,7 +117,7 @@ datasources:
       type: grafana-opensearch-datasource
       basicAuth: true
       basicAuthUser: doadmin
-      url: "https://db-opensearch-nyc3-43713-do-user-17982107-0.f.db.ondigitalocean.com"
+      url: "https://db-opensearch-nyc3-43713-do-user-17982107-0.f.db.ondigitalocean.com:25060"
       isDefault: false
       jsonData:
         pplEnabled: false
