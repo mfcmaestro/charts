@@ -105,6 +105,29 @@ datasources:
         manageAlerts: "false"
       secureJsonData:
         basicAuthPassword: ${GC_LOGS_TOKEN}
+  - name: opensearch
+    valuesFrom:
+      - targetPath: secureJsonData.basicAuthPassword
+        valueFrom:
+          secretKeyRef:
+            name: grafana-operator-common-secret
+            key: GRAFANA_OPENSEARCH_PASSWORD
+    datasource:
+      type: grafana-opensearch-datasource
+      basicAuth: true
+      basicAuthUser: doadmin
+      url: "https://db-opensearch-nyc3-43713-do-user-17982107-0.f.db.ondigitalocean.com"
+      isDefault: false
+      jsonData:
+        pplEnabled: false
+        version: 2.16.0
+        maxConcurrentShardRequests: 5
+        flavor: "Opensearch"
+        timeField: "@timestamp"
+        logMessageField: log       # only applicable for logs
+        logLevelField: level       # only applicable for logs
+      secureJsonData:
+        basicAuthPassword: ${GRAFANA_OPENSEARCH_PASSWORD}
 
   - name: grafanacloud-kropyva-prom
     valuesFrom:
@@ -140,6 +163,7 @@ vault:
     GC_ONCALL_WEBHOOK_URL: vault:secret/data/nettle/grafanacloud/grafana/grafana-selfhosted#GC_ONCALL_WEBHOOK_URL
     GC_LOGS_USERNAME: vault:secret/data/nettle/grafanacloud/grafana/grafana-selfhosted#GC_LOGS_USERNAME
     GC_LOGS_TOKEN: vault:secret/data/nettle/grafanacloud/grafana/grafana-selfhosted#GC_LOGS_TOKEN
+    GRAFANA_OPENSEARCH_PASSWORD: vault:secret/data/nettle/grafanacloud/grafana/grafana-selfhosted#GRAFANA_OPENSEARCH_PASSWORD
 
 folders:
   authzgateway:
