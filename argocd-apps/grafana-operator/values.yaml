@@ -105,6 +105,7 @@ datasources:
         manageAlerts: "false"
       secureJsonData:
         basicAuthPassword: ${GC_LOGS_TOKEN}
+
   - name: opensearch
     valuesFrom:
       - targetPath: secureJsonData.basicAuthPassword
@@ -123,7 +124,7 @@ datasources:
         version: 2.16.0
         maxConcurrentShardRequests: 5
         flavor: "Opensearch"
-        timeField: "@timestamp"
+        timeField: "timestamp"
         logMessageField: log       # only applicable for logs
         logLevelField: level       # only applicable for logs
       secureJsonData:
