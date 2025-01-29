@@ -4,7 +4,6 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: vmuser-{{ .name }}-secret
-  namespace: vmks
   annotations:
     vault.security.banzaicloud.io/vault-addr: https://vault.default:8200
     vault.security.banzaicloud.io/vault-tls-secret: vault-tls
@@ -18,7 +17,6 @@ apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMUser
 metadata:
   name: {{ .name }}
-  namespace: vmks
 spec:
   passwordRef:
     name: vmuser-{{ .name }}-secret
