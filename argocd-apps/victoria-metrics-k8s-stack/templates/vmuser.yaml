@@ -1,0 +1,31 @@
+{{- range .Values.vmusers }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vmuser-{{ .name }}-secret
+  namespace: vmks
+  annotations:
+    vault.security.banzaicloud.io/vault-addr: https://vault.default:8200
+    vault.security.banzaicloud.io/vault-tls-secret: vault-tls
+    vault.security.banzaicloud.io/vault-role: secretsmutation
+data:
+  password: {{ .passwordSecretRef | b64enc }}
+type: Opaque
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMUser
+metadata:
+  name: {{ .name }}
+  namespace: vmks
+spec:
+  passwordRef:
+    name: vmuser-{{ .name }}-secret
+    key: password
+  targetRefs:
+    - crd:
+        kind: VMSingle
+        name: vmks
+        namespace: vmks
+      paths: ["/api/v1/write", "/vmui.*"]
+{{- end }}

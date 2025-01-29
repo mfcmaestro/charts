@@ -1,0 +1,84 @@
+victoria-metrics-k8s-stack:
+
+  vmsingle:
+    enabled: true
+    spec:
+      retentionPeriod: 31d
+
+  vmauth:
+    enabled: true
+    spec:
+      selectAllByDefault: true
+      unauthorizedUserAccessSpec: null
+      extraArgs:
+        reloadAuthKey: password
+        flagsAuthKey: password
+        metricsAuthKey: password
+        pprofAuthKey: password
+
+  vmagent:
+    enabled: true
+    # spec:
+    #   remoteWrite:
+    #     - url: http://vmauth-vmks.vmks.svc:8427/api/v1/write
+    #       basicAuth:
+    #         username:
+    #           name: user-password
+    #           key: username
+    #         password:
+    #           name: user-password
+    #           key: password
+
+  grafana:
+    enabled: false
+
+  alertmanager:
+    enabled: false
+  
+  defaultDashboards:
+    enabled: false
+
+  defaultRules:
+    create: false
+
+  vmalert:
+    enabled: false
+
+  prometheus-node-exporter:
+    enabled: true
+
+  kube-state-metrics:
+    enabled: true
+
+  kubelet:
+    enabled: false
+
+  kubeApiServer:
+    enabled: false
+
+  kubeControllerManager:
+    enabled: false
+
+  kubeDns:
+    enabled: false
+
+  coreDns:
+    enabled: false
+
+  kubeScheduler:
+    enabled: false
+
+  kubeEtcd:
+    enabled: false
+
+  kubeProxy:
+    enabled: false
+
+  vmcluster:
+    enabled: false
+
+vmusers:
+  - name: user
+    passwordSecretRef: vault:secret/data/vmauth/user#password
+  - name: admin
+    passwordSecretRef: vault:secret/data/vmauth/admin#password
