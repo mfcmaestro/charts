@@ -9,6 +9,7 @@ metadata:
     vault.security.banzaicloud.io/vault-addr: https://vault.default:8200
     vault.security.banzaicloud.io/vault-tls-secret: vault-tls
     vault.security.banzaicloud.io/vault-role: secretsmutation
+    vaultInjectionChecksum: {{ printf "%s" .passwordSecretRef | sha256sum }}
 data:
   password: {{ .passwordSecretRef | b64enc }}
 type: Opaque
@@ -25,7 +26,7 @@ spec:
   targetRefs:
     - crd:
         kind: VMSingle
-        name: vmks
-        namespace: vmks
+        name: vm
+        namespace: monitoring
       paths: ["/api/v1/write", "/vmui.*"]
 {{- end }}
