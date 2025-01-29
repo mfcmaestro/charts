@@ -47,7 +47,7 @@ victoria-metrics-k8s-stack:
     enabled: false
 
   prometheus-node-exporter:
-    enabled: true
+    enabled: false
 
   kube-state-metrics:
     enabled: true
