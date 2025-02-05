@@ -17,6 +17,18 @@ victoria-metrics-k8s-stack:
         flagsAuthKey: password
         metricsAuthKey: password
         pprofAuthKey: password
+      ingress:
+        enabled: true
+        annotations:
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+          nginx.ingress.kubernetes.io/server-snippet: |
+            location ~* ^(/-/reload|/flags|/metrics|/debug/pprof) {
+                deny all;
+                return 403;
+            }
+        class_name: ops-nginx
+        host: vmks.nettlecloud.com
 
   vmagent:
     enabled: true
