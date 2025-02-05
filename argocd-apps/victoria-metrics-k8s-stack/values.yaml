@@ -27,7 +27,6 @@ victoria-metrics-k8s-stack:
                 return 403;
             }
         class_name: ops-nginx
-        enabled: true
         host: vmks.nettlecloud.com
 
   vmagent:
