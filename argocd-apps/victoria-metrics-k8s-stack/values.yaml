@@ -11,7 +11,7 @@ victoria-metrics-k8s-stack:
     enabled: true
     spec:
       selectAllByDefault: true
-      unauthorizedUserAccessSpec: null
+      unauthorizedUserAccessSpec:
       extraArgs:
         reloadAuthKey: password
         flagsAuthKey: password
