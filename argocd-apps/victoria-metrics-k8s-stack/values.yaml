@@ -8,6 +8,11 @@ victoria-metrics-k8s-stack:
       retentionPeriod: "31d"
       replicationFactor: 2
 
+  vmsingle:
+    enabled: false
+    spec:
+      retentionPeriod: 31d
+
   vmauth:
     enabled: true
     spec:
