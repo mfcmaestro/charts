@@ -2,8 +2,14 @@ victoria-metrics-k8s-stack:
 
   fullnameOverride: vm
 
-  vmsingle:
+  vmcluster:
     enabled: true
+    spec:
+      retentionPeriod: "31d"
+      replicationFactor: 2
+
+  vmsingle:
+    enabled: false
     spec:
       retentionPeriod: 31d
 
