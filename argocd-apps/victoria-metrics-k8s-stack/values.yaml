@@ -36,7 +36,7 @@ victoria-metrics-k8s-stack:
         host: vmks.nettlecloud.com
 
   vmagent:
-    enabled: true
+    enabled: false
     # spec:
     #   remoteWrite:
     #     - url: http://vmauth-vmks.vmks.svc:8427/api/v1/write
