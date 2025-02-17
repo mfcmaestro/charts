@@ -106,30 +106,6 @@ datasources:
       secureJsonData:
         basicAuthPassword: ${GC_LOGS_TOKEN}
 
-  - name: opensearch
-    valuesFrom:
-      - targetPath: secureJsonData.basicAuthPassword
-        valueFrom:
-          secretKeyRef:
-            name: grafana-operator-common-secret
-            key: GRAFANA_OPENSEARCH_PASSWORD
-    datasource:
-      type: grafana-opensearch-datasource
-      basicAuth: true
-      basicAuthUser: doadmin
-      url: "https://db-opensearch-nyc3-43713-do-user-17982107-0.f.db.ondigitalocean.com:25060"
-      isDefault: false
-      jsonData:
-        pplEnabled: false
-        version: 2.16.0
-        maxConcurrentShardRequests: 5
-        flavor: "Opensearch"
-        timeField: "timestamp"
-        logMessageField: log       # only applicable for logs
-        logLevelField: level       # only applicable for logs
-      secureJsonData:
-        basicAuthPassword: ${GRAFANA_OPENSEARCH_PASSWORD}
-
   - name: grafanacloud-kropyva-prom
     valuesFrom:
       - targetPath: secureJsonData.basicAuthPassword

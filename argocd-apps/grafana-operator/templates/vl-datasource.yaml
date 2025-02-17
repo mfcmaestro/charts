@@ -1,0 +1,16 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: vl-datasource
+spec:
+  datasource:
+    access: proxy
+    type: victoriametrics-logs-datasource
+    name: VL
+    url: http://vmlogs-victoria-logs-single-server.vmlogs.svc.cluster.local:9428
+  instanceSelector:
+    matchLabels:
+      instance: grafana-selfhosted
+  plugins:
+    - name: victoriametrics-logs-datasource
+      version: "0.15.0"
